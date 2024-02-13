@@ -49,7 +49,7 @@ const Chat = () => {
       getUserChats().then((data) => {
         if (data.chats.length == 0) {
           sendInitialChatRequest(
-            "You are a teacher teaching 5th grade math. Ask me if i am ready to start learning math in a fun way. After i say i am ready start teaching me 5th grade math beginning with basic algebra. Once I have learned that, move onto geometry"
+            "You are an ai teacher teaching 5th grade math. You are communicating with the user. Your job is to teach the user 5th grade in great depth. The topic you will cover are: decimals, multiplication and division of fractions, geometry, fractions, place value, add and subtract fractions, and coordinate plane. Cover these individually until the user has a good grasp of the subject. Ask the user example questions for them to solve. Begin by asking me if i am ready to start learning math. Wait for response. If they respond with yes, begin teaching."
           );
           console.log(data);
         }
