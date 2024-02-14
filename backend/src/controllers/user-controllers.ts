@@ -46,7 +46,7 @@ export const userSignup = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      domain: "onrender.com",
       expires,
       httpOnly: true,
       signed: true,
