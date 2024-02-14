@@ -14,7 +14,8 @@ const app = express();
 
 //middlewares
 
-app.use(cors<Request>());
+const cor = app.use(cors<Request>());
+console.log(cor, 'cor')
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -25,8 +26,10 @@ app.use(morgan("dev"));
 app.use("/api/v1", appRouter);
 
 app.use(express.static(path.join(__dirname, '../../frontend/dist')))
-app.get('*', (req: Request, res: Response) =>
+app.get('*', (req: Request, res: Response) =>{
+    console.log(res)
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
+}
 )
 
 
