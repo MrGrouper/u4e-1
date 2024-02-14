@@ -7,6 +7,7 @@ export const createToken = (id: string, email: string, expiresIn: string) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn,
   });
+  console.log(token, "create token")
   return token;
 };
 
@@ -16,6 +17,7 @@ export const verifyToken = async (
   next: NextFunction
 ) => {
   const token = req.signedCookies[`${COOKIE_NAME}`];
+  console.log(token, "verify token")
   if (!token || token.trim() === "") {
     return res.status(401).json({ message: "Token Not Received" });
   }
