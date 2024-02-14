@@ -14,8 +14,17 @@ const app = express();
 
 //middlewares
 
-const cor = app.use(cors<Request>());
-console.log(cor, 'cor')
+app.use(cors());
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    if ('OPTIONS' == req.method) {
+       res.sendStatus(200);
+     }
+     else {
+       next();
+}});
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -26,10 +35,8 @@ app.use(morgan("dev"));
 app.use("/api/v1", appRouter);
 
 app.use(express.static(path.join(__dirname, '../../frontend/dist')))
-app.get('*', (req: Request, res: Response) =>{
-    console.log(res)
+app.get('*', (req: Request, res: Response) =>
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
-}
 )
 
 
