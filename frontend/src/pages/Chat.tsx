@@ -12,6 +12,7 @@ import {
   sendInitialChatRequest,
 } from "../helpers/api-communicator";
 import toast from "react-hot-toast";
+import { Messenger } from "../components/chat/Messenger";
 type Message = {
   role: "user" | "assistant";
   content: string;
@@ -122,8 +123,8 @@ const Chat = () => {
               fontWeight: 700,
             }}
           >
-            {auth?.user?.name[0]}
-            {auth?.user?.name.split(" ")[1][0]}
+            {/* {auth?.user?.name[0]} */}
+            {/* {auth?.user?.name.split(" ")[1][0]} */}
           </Avatar>
           <Button
             onClick={handleDeleteChats}
@@ -143,57 +144,7 @@ const Chat = () => {
             Clear Conversation
           </Button>
         </Box>
-        
-      <Box
-      sx = {{
-        display: "flex",
-        flexDirection: "column",
-        height: "50vh"
-
-      }}>
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            height:"50vh",
-            bgcolor: "#004d56",
-            borderRadius: "15px 15px 0 0",
-            flexDirection: "column",
-
-          }}
-        >
-          <Typography sx={{ mx: "auto", fontFamily: "work sans", padding: "10px"}}>
-            Ask your teacher
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            width: "100%",
-            borderRadius: "0 0 15px 15px",
-            backgroundColor: "rgb(17,27,39)",
-            display: "flex",
-
-          }}
-        >
-          {" "}
-          <input
-            type="text"
-            style={{
-              width: "100%",
-              backgroundColor: "transparent",
-              padding: "30px",
-              border: "none",
-              outline: "none",
-              color: "white",
-              fontSize: "20px",
-            }}
-          />
-          <IconButton sx={{ color: "white", mx: 1 }}>
-            <IoMdSend />
-          </IconButton>
-        </Box>
-        </Box>
+        <Messenger />
       </Box>
       <Box
         sx={{
