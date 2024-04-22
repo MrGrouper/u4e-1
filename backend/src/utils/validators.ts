@@ -24,11 +24,12 @@ export const validate = (validations: ValidationChain[]) => {
 ]
 
 export const signupValidator = [
-    body("name").notEmpty().withMessage("Name is required"),
+    body("firstname").notEmpty().withMessage("Fisrt name is required"),
+    body("lastname").notEmpty().withMessage("Last name is required"),
     ...loginValidator,
 ]
 
 
 export const chatCompletionValidator = [
-  body("message").notEmpty().withMessage("Message  is required"),
+  body("text").notEmpty().withMessage("Message  is required"),
 ];

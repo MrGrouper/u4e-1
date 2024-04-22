@@ -12,8 +12,7 @@ axios.defaults.withCredentials = true;
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Roboto Slab,serif",
-    allVariants: { color: "white" },
+    fontFamily: "Reddit Mono,monospace"
   },
 });
 
@@ -22,7 +21,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <Toaster position="top-right" />
+          <Toaster 
+          position="bottom-center" 
+          // toastOptions={{
+          //   duration: 5000
+          // }}
+    />
           <App />
         </ThemeProvider>
       </BrowserRouter>

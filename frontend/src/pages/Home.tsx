@@ -16,7 +16,7 @@ const Home = () => {
           flexDirection: "column",
           alignItems: "center",
           mx: "auto",
-          mt: 3,
+          mt: 0,
         }}
       >
         <Box
@@ -30,8 +30,6 @@ const Home = () => {
             justifyContent: "center",
             gap: 0,
             my: 10,
-            backgroundImage:
-              "linear-gradient(386deg, rgba(228, 228, 228,0.04) 0%, rgba(228, 228, 228,0.04) 30%,rgba(19,250,113, 0.43) 30%, rgba(19,250,113, 0.43) 49%,rgb(0,0,0) 49%, rgb(0,0,0) 100%),linear-gradient(400deg, rgba(228, 228, 228,0.04) 0%, rgba(228, 228, 228,0.04) 20%,rgba(19,250,113, 0.43) 20%, rgba(19,250,113, 0.43) 60%,rgb(0,0,0) 60%, rgb(0,0,0) 100%),linear-gradient(345deg, rgba(228, 228, 228,0.04) 0%, rgba(228, 228, 228,0.04) 29%,rgba(19,250,113, 0.43) 29%, rgba(19,250,113, 0.43) 48%,rgb(0,0,0) 48%, rgb(0,0,0) 100%),linear-gradient(193deg, rgb(0,0,0),rgb(0,0,0));",
           }}
         >
           <Box
@@ -45,7 +43,7 @@ const Home = () => {
                 textAlign: "right",
                 padding: "0",
                 margin: "0",
-                color: "#fafb63",
+                color: "#f9bc60",
               }}
             >
               FREE<br></br>EDUCATION<br></br>FOR ALL
@@ -62,6 +60,7 @@ const Home = () => {
                 textAlign: "right",
                 padding: "0",
                 margin: "0",
+                color: "#e8e4e6"
               }}
             >
               Using AI Tutoring with teacher leadership
@@ -78,6 +77,7 @@ const Home = () => {
                 textAlign: "right",
                 padding: "0",
                 margin: "0",
+                color: "#e8e4e6"
               }}
             >
               See our mission statement
@@ -92,7 +92,8 @@ const Home = () => {
             flexDirection: "column",
             justifyContent: "center",
             px: { md: "80px", xs: "30px", sm: "30px" },
-            gap: 5
+            gap: 5,
+            bgcolor: "#abd1c6"
           }}
         >
           <h3
@@ -101,6 +102,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
+              color: "#001e1d"
             }}
           >
             We believe that every child, regardless of location, should have the
@@ -112,6 +114,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
+              color: "#004643"
             }}
           >
             With the world’s smartest tutor by their side, tailored learning will become a reality, accelerating knowledge acquisition based on individual effort and desire.
@@ -123,7 +126,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
-              color:"#6bfff7",
+              color:"#001e1d",
             }}
           >
             OUR MISSION
@@ -134,6 +137,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
+              color: "#001e1d"
             }}
           >
             Our mission is to harness Artificial intelligence, aiming to provide universal access to education. We are developing a platform that fosters the student-teacher relationship, enhanced by AI to offer personalized tutoring. This AI assistant would adapt to each student’s pace and preferences, augmenting the traditional educational model rather than competing with it. Our organization is committed to this ideal, seeking to make high-quality education accessible to all at no cost or at the lowest cost possible. 
@@ -156,7 +160,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
-              color:"#6bfff7",
+              color:"#abd1c6",
             }}
           >
             Making transparency key to the Organization
@@ -167,6 +171,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
+              color: "#e8e4e6"
             }}
           >
             "We are committed to building a contributor-funded nonprofit organization that operates with integrity and efficiency—a venture we can all be proud of. Transparency is at the core of our values; therefore, all donors will have unrestricted access to our financial records via our website at any time. Our pledge is to embody a model of financial prudence, ensuring that every dollar donated is utilized judiciously. Our primary objective is to minimize administrative and operational expenses, maximizing the allocation of funds directly towards providing free education. This approach ensures that the largest possible portion of donor contributions goes directly to our mission of making education accessible to all."
@@ -178,7 +183,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
-              color:"#6bfff7",
+              color:"#abd1c6",
             }}
           >
             How Far we have come
@@ -189,6 +194,7 @@ const Home = () => {
               textAlign: "center",
               padding: "0",
               margin: "0",
+              color: "#e8e4e6"
             }}
           >
             We have written the code for our Platform. The interactive program connects teachers to children and children to CHATGPT . We use two different types of AI channels to protect against “hallucinations” , a common phenomenon that Bots will give convincing false answers. We think the usage of “Two brains is better than one” may be a game changer to the industry regarding this problem.

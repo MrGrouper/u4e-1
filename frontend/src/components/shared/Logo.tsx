@@ -27,7 +27,7 @@ const Logo = () => {
           textShadow: "2px 2px 20px #000",
         }}
       >
-        <span style={{ fontSize: "20px" }}>U4E</span>education
+        <span style={{ fontSize: "20px" }}>U4E</span>ducation
       </Typography>
     </div>
   );

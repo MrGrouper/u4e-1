@@ -1,5 +1,4 @@
 // import React from "react";
-// import { Link } from "react-router-dom";
 import Logo from "../shared/Logo";
 
 const Footer = () => {
@@ -7,7 +6,7 @@ const Footer = () => {
     <footer>
       <div
         style={{
-          backgroundColor: "#031B39",
+          backgroundColor: "#004643",
           width: "100%",
           minHeight: "20vh",
           maxHeight: "30vh",

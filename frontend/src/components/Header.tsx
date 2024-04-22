@@ -19,7 +19,7 @@ const Header = () => {
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <AppBar
-      sx={{ bgcolor: "black", position: "static", boxShadow: "none" }}
+      sx={{ bgcolor: "#001e1d", position: "fixed", boxShadow: "none", height: "65px"}}
     >
       <Toolbar sx={{ display: "flex" }}>
         <Logo />

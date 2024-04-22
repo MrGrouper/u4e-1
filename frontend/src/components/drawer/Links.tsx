@@ -17,8 +17,8 @@ export const Links = () => {
               />
               <NavigationLink
                 bg="transparent"
-                to="/chat"
-                text="Go To Classroom"
+                to="/dashboard"
+                text="Go To Dashboard"
                 textColor="white"
               />
               <NavigationLink

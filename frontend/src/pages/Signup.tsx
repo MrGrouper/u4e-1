@@ -11,12 +11,13 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
+    const firstname = formData.get("firstname") as string;
+    const lastname = formData.get("lastname") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     try {
       toast.loading("Signing Up", { id: "signup" });
-      await auth?.signup(name, email, password);
+      await auth?.studentSignup(firstname, lastname, email, password);
       toast.success("Signed Up Successfully", { id: "signup" });
     } catch (error) {
       console.log(error);
@@ -25,7 +26,7 @@ const Signup = () => {
   };
   useEffect(() => {
     if (auth?.user) {
-      return navigate("/chat");
+      return navigate("/dashboard");
     }
   }, [auth]);
   return (
@@ -67,7 +68,8 @@ const Signup = () => {
             >
               Signup
             </Typography>
-            <CustomizedInput type="text" name="name" label="Name" />
+            <CustomizedInput type="text" name="firstname" label="First name" />
+            <CustomizedInput type="text" name="lastname" label="Last name" />
             <CustomizedInput type="email" name="email" label="Email" />
             <CustomizedInput type="password" name="password" label="Password" />
             <Button
