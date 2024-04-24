@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getUserClassrooms, getAllUsers, sendCreateClassroomRequest, sendInitialChatRequest } from "../helpers/api-communicator";
 import Class from "../components/Class";
+import { toast } from "react-hot-toast";
 
 const Dashboard = () => {
   const auth = useAuth();
@@ -51,18 +52,23 @@ const Dashboard = () => {
     }
 
     try{
+      toast.loading('enrolling...')
       const data = await sendCreateClassroomRequest(req)
       await sendInitialChatRequest(data, req.senderId)
+      toast.dismiss()
+      toast.success('enrolled!')
       setClassrooms([...classrooms, data])
 
     } catch {
       console.log("cannot create classroom")
+      toast.error('could not enroll')
   
   }}
 
   if (user.isTeacher == false)  {return (
     <>
       <div className="dashboard-container">
+        <div className="Enrolled-List">
         <h1>Enrolled classes</h1>
         <div className="Classroom-List">
           {classrooms.map((classroom) => (
@@ -73,7 +79,7 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
-      <div>
+      <div className="Available-List">
         <h1>Available classes</h1>
         <h2>click to enroll</h2>
         <div className="Classroom-List">
@@ -83,10 +89,11 @@ const Dashboard = () => {
               onClick = {()=>handleEnroll(subject, teacher.id)}
               style={{ background: "transparent", color: "white", cursor: "pointer" }}
               >
-               { subject }
+               { subject } with {teacher.firstName} {teacher.lastName}
                 </p>))
           ))}
         </div>
+      </div>
       </div>
     </>
   );

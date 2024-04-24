@@ -5,12 +5,13 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from"cors"
 import { Socket } from "socket.io";
-import { ServerToClientEvents, ClientToServerEvents } from "../../typing.js"
+import { ServerToClientEvents, ClientToServerEvents } from "../typing.js"
 
 const server = createServer(app)
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, { 
   cors: {
-    origin: ["https://ardent-particle-382720.uc.r.appspot.com"]
+    origin: ["http://localhost:3000"],
+    credentials: true
   }
 });
 
@@ -22,7 +23,7 @@ io.on("connection", (socket: Socket<ClientToServerEvents, ServerToClientEvents>)
   })
 });
 
-server.listen(80);
+server.listen(8080);
 
 
 const PORT = process.env.PORT || 4000

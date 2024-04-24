@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://ardent-particle-382720.uc.r.appspot.com"]
+        origin: ["http://localhost:5173"]
     }
 });
 io.on("connection", (socket) => {
@@ -15,7 +15,7 @@ io.on("connection", (socket) => {
         io.to(data.classroomId).emit("serverMessage", data);
     });
 });
-server.listen(80);
+server.listen(8080);
 const PORT = process.env.PORT || 4000;
 connectToDatabase()
     .then(() => {

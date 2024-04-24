@@ -11,9 +11,9 @@ import { useAuth } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 // import Footer from "./components/footer/Footer";
 import { Socket, io }from 'socket.io-client';
-import { ServerToClientEvents, ClientToServerEvents } from "../../typing"
+import { ServerToClientEvents, ClientToServerEvents } from "../typing"
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents > = io("https://ardent-particle-382720.uc.r.appspot.com:80");
+const socket: Socket<ServerToClientEvents, ClientToServerEvents > = io("http://localhost:8080", {transports:['polling','websocket', 'webtransport']});
 
 socket.on("connect", () => {
   console.log(`client ${socket.id}`)
