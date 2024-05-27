@@ -40,8 +40,8 @@ type User = {
 const AiChat = (props: {
   classroom: Classroom;
   currentUser: any;
-  handleSetSocketMessage;
-  receivedMessage
+  // handleSetSocketMessage;
+  // receivedMessage
 }) => {
 //@ts-expect-error unused
   const [userData, setUserData] = useState<User | null>(null);
@@ -88,11 +88,11 @@ const AiChat = (props: {
     console.log(messages)
   },[messages])
 
-  useEffect(() => {
-    if (props.receivedMessage !== null && props.receivedMessage.teacherStudent == false && props.receivedMessage.senderId !== props.currentUser._id) {
-      setMessages([...messages, props.receivedMessage])
-    }
-  },[props.receivedMessage])
+  // useEffect(() => {
+  //   if (props.receivedMessage !== null && props.receivedMessage.teacherStudent == false && props.receivedMessage.senderId !== props.currentUser._id) {
+  //     setMessages([...messages, props.receivedMessage])
+  //   }
+  // },[props.receivedMessage])
 
 
 const handleSend = async () => {
@@ -109,14 +109,14 @@ const handleSend = async () => {
     };
     setMessages(prev => [...prev, message])
     // send message to socket server
-    props.handleSetSocketMessage(message)
+    // props.handleSetSocketMessage(message)
     // send message to database
     try {
       toast.loading('generating response')
       const data = await addAiMessage(message);
       toast.dismiss()
       setMessages(prev => [...prev, data]);
-      props.handleSetSocketMessage(data)
+      // props.handleSetSocketMessage(data)
     } catch {
       console.log("error receiving AI Message");
       toast.error('could not generate response')

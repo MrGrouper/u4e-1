@@ -23,6 +23,7 @@ type User = {
   isAdmin: boolean;
   isTeacher: boolean;
   subjects: Array<string>;
+  avatarUrl: string
 };
 type UserAuth = {
   isLoggedIn: boolean;
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     async function checkStatus() {
       const data = await checkAuthStatus();
       if (data) {
-        setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects});
+        setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects, avatarUrl: data.avatarUrl});
         setIsLoggedIn(true);
       }
     }
@@ -53,14 +54,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     const data = await loginUser(email, password);
     if (data) {
-      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects})
+      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects, avatarUrl: data.avatarUrl})
       setIsLoggedIn(true);
     }
   };
   const studentSignup = async (firstname: string, lastname: string, email: string, password: string) => {
     const data = await signupStudent(firstname, lastname, email, password);
     if (data) {
-      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects})
+      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects, avatarUrl: data.avatarUrl})
       setIsLoggedIn(true);
     }
 
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const teacherSignup = async (firstname: string, lastname: string, email: string, password: string) => {
     const data = await signupTeacher(firstname, lastname, email, password);
     if (data) {
-      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects})
+      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects, avatarUrl: data.avatarUrl})
       setIsLoggedIn(true);
     }
   };

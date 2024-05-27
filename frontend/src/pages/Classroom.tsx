@@ -1,11 +1,12 @@
 // import  { useEffect, useRef, useState } from "react";
 //@ts-expect-error not used
-import { Box, Avatar, Typography, Button, IconButton } from "@mui/material";
+import { Box, Avatar, Typography, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
 // import red from "@mui/material/colors/red";
 // import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import TeacherChat from "../components/chat/TeacherChat";
 import AiChat from "../components/chat/AiChat";
+import ChatDrawer from "../components/drawer/ChatDrawer";
 // import {Socket, io} from "socket.io-client";
 // import AiChat from "../components/chat/aiChat";
 
@@ -20,16 +21,37 @@ import AiChat from "../components/chat/AiChat";
 // } from "../helpers/api-communicator";
 // import toast from "react-hot-toast";
 
-const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
+// const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
+  const Classroom = () => {
   const location = useLocation();
   const { data, currentUser } = location.state;
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down("lg"))
 
   return (
     <>
-      <div className="classroom-container">
-        <Box
+      <Box
+      sx= {{
+        display: "flex",
+        flexDirection: {md: 'row', xs: 'column-reverse', sm: 'column-reverse'},
+        marginTop: '65px',
+        height: '100vh-65px',
+        alignItems: 'center',
+        gap: '20px',
+        padding: '20px',
+        backgroundColor: 'transparent'
+
+      }}
+      >
+        {isMatch ? <ChatDrawer 
+                  classroom={data} 
+                  currentUser={currentUser} 
+                  />
+        
+        : <Box
           sx={{
-            display: { md: "flex", xs: "none", sm: "none" },
+            // display: { md: "flex", xs: "none", sm: "none" },
+            display:"flex",
             flexDirection: "column",
             flexGrow: "0",
             height: "100%",
@@ -120,19 +142,19 @@ const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
           <TeacherChat 
           classroom={data} 
           currentUser={currentUser} 
-          handleSetSocketMessage = {props.handleSetSocketMessage} 
-          receivedMessage={props.receivedMessage}
+          // handleSetSocketMessage = {props.handleSetSocketMessage} 
+          // receivedMessage={props.receivedMessage}
           />
-        </Box>
+        </Box>}
         <Box>
           <AiChat 
           classroom={data}
            currentUser={currentUser}
-           handleSetSocketMessage = {props.handleSetSocketMessage} 
-           receivedMessage={props.receivedMessage}
+          //  handleSetSocketMessage = {props.handleSetSocketMessage} 
+          //  receivedMessage={props.receivedMessage}
             />
         </Box>
-      </div>
+        </Box>
     </>
   );
 };

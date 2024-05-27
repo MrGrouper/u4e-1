@@ -24,9 +24,9 @@ export const signupStudent = async (
   firstname: string,
   lastname: string,
   email: string,
-  password: string
+  password: string,
 ) => {
-  const res = await axios.post("/user/studentsignup", { firstname, lastname, email, password });
+  const res = await axios.post("/user/studentsignup", { firstname, lastname, email, password});
   if (res.status !== 201) {
     throw new Error("Unable to Signup");
   }
@@ -154,6 +154,7 @@ export const getUser = async ( id: string | Types.ObjectId | undefined ) => {
     throw new Error("Unable to get user");
   }
   const data = await res.data;
+  console.log('apicom', data)
 
   return data;
 };
@@ -179,4 +180,31 @@ if (res.status !== 200) {
 const data = await res.data;
 
 return data;
+};
+
+export const uploadImage = async (formData: FormData) => {
+  const config = {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  };
+  const res = await axios.post('/upload/image', formData, config );
+  // console.log(res)
+  if (res.status !== 200) {
+    throw new Error("Unable to upload image");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
+export const updateUser = async ( user ) => {
+  const res = await axios.put(`/user/${user._id}/update`, user );
+  // console.log(res)
+  if (res.status !== 200) {
+    throw new Error("Unable to update user");
+  }
+
+  const data = await res.data;
+  return data;
 };

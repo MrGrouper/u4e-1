@@ -43,19 +43,23 @@ const parseMarkdown = (content) => {
 const ChatItem = ({ content, role }) => {
   // Additional parsing for LaTeX goes here if needed
 
+  if (role === 'assistant'){
   return (
     <Box
       sx={{
         display: 'flex',
         p: 2,
-        bgcolor: role === 'assistant' ? 'transparent' : '#001e1d',
+        bgcolor: 'transparent',
         gap: 2,
         borderRadius: 2,
       }}
     >
-      <Avatar sx={{ ml: '0', bgcolor: role === 'assistant' ? 'transparent' : 'black', color: 'white' }}>
-        {/* Avatar Image */}
-      </Avatar>
+
+      <Avatar 
+      src = {window.location.origin + '/U4E-AI-Icon-cropped.png'}
+      alt = 'teacher'
+      />
+      
       <Box>
         <Typography component="div" sx={{ fontSize: '14px' }}>
           {parseMarkdown(content)}
@@ -63,6 +67,32 @@ const ChatItem = ({ content, role }) => {
       </Box>
     </Box>
   );
+    }
+    else {
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            p: 2,
+            bgcolor: '#001e1d',
+            gap: 2,
+            borderRadius: 2,
+          }}
+        >
+    
+          <Avatar 
+          sx={{ ml: '0', bgcolor:'black', color: 'white' }}
+          
+          >
+          </Avatar>
+          <Box>
+            <Typography component="div" sx={{ fontSize: '14px' }}>
+              {parseMarkdown(content)}
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
 };
 
 export default ChatItem;

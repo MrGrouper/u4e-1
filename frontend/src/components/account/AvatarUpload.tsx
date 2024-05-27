@@ -1,17 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 
 import { Box, Typography, Button, Avatar, Badge } from "@mui/material";
-// import CustomizedInput from "../components/shared/CustomizedInput";
-import { useAuth } from "../context/AuthContext";
-import { uploadImage } from "../helpers/api-communicator";
-// import { useNavigate } from "react-router-dom";
-import { updateUser, getUser } from "../helpers/api-communicator";
+import { useAuth } from "../../context/AuthContext";
+import { uploadImage } from "../../helpers/api-communicator";
+import { updateUser, getUser } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
 
-const Onboard = () => {
+const AvatarUpload = () => {
   const auth = useAuth();
-  console.log(auth)
-  
 
   const [image, setImage] = useState<any>(null);
   const [url, setUrl] = useState(null);
@@ -57,16 +53,16 @@ const Onboard = () => {
   }
 
   return (
-    <div>
-      <Box
-        display={"flex"}
-        flex={{ xs: 1, md: 0.5 }}
-        justifyContent={"center"}
-        alignItems={"center"}
-        padding={2}
-        ml={"auto"}
-        mt={16}
-      >
+
+    //   <Box
+    //     display={"flex"}
+    //     flex={{ xs: 1, md: 0.5 }}
+    //     justifyContent={"center"}
+    //     alignItems={"center"}
+    //     padding={2}
+    //     ml={"auto"}
+    //     mt={16}
+    //   >
         <form
           onSubmit={handleSubmit}
           style={{
@@ -163,9 +159,9 @@ const Onboard = () => {
             </Button>
           
         </form>
-      </Box>
-    </div>
+    //   </Box>
+
   );
 };
 
-export default Onboard;
+export default AvatarUpload;

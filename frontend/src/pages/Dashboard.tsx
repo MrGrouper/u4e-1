@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getUserClassrooms, getAllUsers, sendCreateClassroomRequest, sendInitialChatRequest } from "../helpers/api-communicator";
 import Class from "../components/Class";
+import { toast } from "react-hot-toast";
 
 const Dashboard = () => {
   const auth = useAuth();
@@ -51,16 +52,21 @@ const Dashboard = () => {
     }
 
     try{
+      toast.loading('enrolling...')
       const data = await sendCreateClassroomRequest(req)
       await sendInitialChatRequest(data, req.senderId)
+      toast.dismiss()
       setClassrooms([...classrooms, data])
 
     } catch {
       console.log("cannot create classroom")
+      toast.error('could not generate response')
   
   }}
 
-  if (user.isTeacher == false)  {return (
+  console.log(user)
+
+  if (user.isTeacher === false)  {return (
     <>
       <div className="dashboard-container">
         <h1>Enrolled classes</h1>
@@ -72,7 +78,7 @@ const Dashboard = () => {
                />
           ))}
         </div>
-      </div>
+      
       <div>
         <h1>Available classes</h1>
         <h2>click to enroll</h2>
@@ -87,6 +93,7 @@ const Dashboard = () => {
                 </p>))
           ))}
         </div>
+      </div>
       </div>
     </>
   );

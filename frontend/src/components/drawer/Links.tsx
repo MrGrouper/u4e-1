@@ -20,7 +20,13 @@ export const Links = () => {
                 to="/dashboard"
                 text="Go To Dashboard"
                 textColor="white"
-              />
+              />              
+              <NavigationLink
+              bg="transparent"
+              to="/account-settings"
+              text="Account"
+              textColor="white"
+            />
               <NavigationLink
                 bg="transparent"
                 textColor="white"

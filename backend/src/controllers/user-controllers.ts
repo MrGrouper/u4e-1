@@ -30,7 +30,7 @@ export const getUser = async (
     const user = await User.findById(id);
     if (user) {
       res.status(200)      
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin });
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin, avatarUrl: user.avatarUrl });
     } else {
       res.status(404).json("No such User");
     }
@@ -48,17 +48,19 @@ export const studentSignup = async (
 ) => {
   try {
     //user signup
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, avatarUrl } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(401).send("User already registered");
     const hashedPassword = await hash(password, 10);
-    const user = new User({ firstname, lastname, email, password: hashedPassword, isTeacher: false, isAdmin: false });
+    const user = new User({ firstname, lastname, email, password: hashedPassword, isTeacher: false, isAdmin: false, avatarUrl });
     await user.save();
 
     // create token and store cookie
     res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      domain: "localhost",
+      httpOnly: false,
+      secure: true,
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       signed: true,
       path: "/",
     });
@@ -68,15 +70,17 @@ export const studentSignup = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       expires,
-      httpOnly: true,
+      httpOnly: false,
+      secure: true,
       signed: true,
     });
 
     return res
       .status(201)
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin, createdAt: user.createdAt, subjects: user.subjects, updatedAt: user.updatedAt });
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin, createdAt: user.createdAt, subjects: user.subjects, updatedAt: user.updatedAt, avatarUrl:user.avatarUrl });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });
@@ -90,17 +94,19 @@ export const teacherSignup = async (
 ) => {
   try {
     //user signup
-    const { firstname, lastname, email, password, subjects } = req.body;
+    const { firstname, lastname, email, password, subjects, avatarUrl } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(401).send("User already registered");
     const hashedPassword = await hash(password, 10);
-    const user = new User({ firstname, lastname, email, password: hashedPassword, isTeacher: true, isAdmin: false, subjects });
+    const user = new User({ firstname, lastname, email, password: hashedPassword, isTeacher: true, isAdmin: false, subjects, avatarUrl });
     await user.save();
 
     // create token and store cookie
     res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      domain: "localhost",
+      httpOnly: false,
+      secure: true,
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       signed: true,
       path: "/",
     });
@@ -110,15 +116,17 @@ export const teacherSignup = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       expires,
-      httpOnly: true,
+      httpOnly: false,
+      secure: true,
       signed: true,
     });
 
     return res
       .status(201)
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isAdmin: user.isAdmin, isTeacher: user.isTeacher, subjects: user.subjects });
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isAdmin: user.isAdmin, isTeacher: user.isTeacher, subjects: user.subjects, avatarUrl: user.avatarUrl});
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });
@@ -145,8 +153,10 @@ export const userLogin = async (
     // create token and store cookie
 
     res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      domain: "localhost",
+      httpOnly: false,
+      secure: true,
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       signed: true,
       path: "/",
     });
@@ -156,9 +166,11 @@ export const userLogin = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       expires,
-      httpOnly: true,
+      httpOnly: false,
+      secure: true,
       signed: true,
     });
 
@@ -187,14 +199,14 @@ export const verifyUser = async (
     }
     return res
       .status(200)
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email });
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
 
-export const userUpdate = async (
+export const userUpdatePassword = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -221,21 +233,48 @@ export const userUpdate = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       expires,
-      httpOnly: true,
+      httpOnly: false,
+      secure: true,
       signed: true,
     });
 
     return res
       .status(200)
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, subjects: user.subjects });
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });
   }
 };
 
+export const userUpdate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await User.findByIdAndUpdate(res.locals.jwtData.id, req.body, {
+      new: true,
+    });
+    if (!user) {
+      return res.status(401).send("User not registered OR Token malfunctioned");
+    }
+    if (user._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("Permissions didn't match");
+    }
+    console.log(user)
+
+    return res
+      .status(200)
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin, avatarUrl: user.avatarUrl });
+  } catch (error) {
+    console.log(error);
+    return res.status(200).json({ message: "ERROR", cause: error.message });
+  }
+};
 
 
 export const userLogout = async (
@@ -254,15 +293,17 @@ export const userLogout = async (
     }
 
     res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      domain: "localhost",
+      httpOnly: false,
+      secure: true,
+      // domain: "u4e-zjbtlzdxca-uc.a.run.app",
+      domain: 'localhost',
       signed: true,
       path: "/",
     });
 
     return res
       .status(200)
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email });
+      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: "ERROR", cause: error.message });

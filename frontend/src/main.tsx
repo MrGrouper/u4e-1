@@ -14,6 +14,19 @@ const theme = createTheme({
   typography: {
     fontFamily: "Reddit Mono,monospace"
   },
+  palette: {
+    primary: {
+      main: '#e8e4e6',
+      light: '#fffffe;',
+      dark: '#004643',
+      contrastText: '#001e1d'
+    },
+    secondary: {
+      main: '#abd1c6',
+      light: '#fffffe;',
+      contrastText: '#f9bc60'
+    }
+  }
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     subjects: {
         type: Array,
     },
+    avatarUrl: {
+        type: String,
+        required: false
+    }
 }, { timestamps: true });
 userSchema.set('toJSON', {
     transform: (document, returnedObject) => {

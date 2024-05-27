@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
     subjects: {
         type: Array,
     }, 
+    avatarUrl: {
+        type: String,
+        required: false
+    }
 },
     { timestamps: true },
 )
