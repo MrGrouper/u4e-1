@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Box, Typography, Button, Avatar, Badge } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { uploadImage } from "../../helpers/api-communicator";
-import { updateUser, getUser } from "../../helpers/api-communicator";
+import { updateUser } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
 
 const AvatarUpload = () => {
@@ -17,12 +17,10 @@ const AvatarUpload = () => {
 
   useEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
-      getUser(auth.user._id).then((data) => {
-        setCurrentUser(data)
-        if (data && data.avatarUrl) {
-          setUrl(data.avatarUrl)
+        setCurrentUser(auth.user)
+        if (auth.user && auth.user.avatarUrl) {
+          setUrl(auth.user.avatarUrl)
         }
-      });
     }
   }, []);
 

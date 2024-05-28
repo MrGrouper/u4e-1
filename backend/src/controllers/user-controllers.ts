@@ -199,7 +199,7 @@ export const verifyUser = async (
     }
     return res
       .status(200)
-      .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin });
+      .json({  message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isAdmin: user.isAdmin, isTeacher: user.isTeacher, subjects: user.subjects, avatarUrl: user.avatarUrl});
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "ERROR", cause: error.message });
