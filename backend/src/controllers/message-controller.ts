@@ -1,7 +1,7 @@
 import Message from "../models/Message.js";
 import { NextFunction, Request, Response } from "express";
 import User from "../models/User.js";
-import openai from "../config/openai-config.js";
+import { openai } from "../config/openai-config.js";
 // import { OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import Classroom from "../models/Classroom.js";
 import { runAiAssistant } from "../utils/aihelper.js";

@@ -28,8 +28,9 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
-    subjects: {
-        type: Array,
+    subjects:         {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subject'
     }, 
     avatarUrl: {
         type: String,

@@ -9,6 +9,11 @@ type Message = {
   role: string,
 }
 
+type Subject = {
+  name: string,
+  teacherId: Types.ObjectId | string,
+  curriculum: string,
+}
 
 
 export const loginUser = async (email: string, password: string) => {
@@ -205,6 +210,31 @@ export const updateUser = async ( user ) => {
     throw new Error("Unable to update user");
   }
 
+  const data = await res.data;
+  return data;
+};
+
+export const uploadCurriculum = async (formData: FormData) => {
+  const config = {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  };
+  const res = await axios.post('/upload/curriculum', formData, config );
+  // console.log(res)
+  if (res.status !== 200) {
+    throw new Error("Unable to upload file");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
+export const sendCreateSubject = async (subject: Subject) => {
+  const res = await axios.post("/subject/new", subject);
+  if (res.status !== 200) {
+    throw new Error("Unable to create subject");
+  }
   const data = await res.data;
   return data;
 };

@@ -4,6 +4,7 @@ import userRoutes from "./user-routes.js";
 import classroomRoutes from "./classroom-routes.js";
 import messageRoutes from "./message-routes.js"
 import uploadRoutes from "./upload-routes.js";
+import subjectRoutes from "./subject-routes.js";
 
 const appRouter = Router();
 
@@ -12,5 +13,6 @@ appRouter.use("/user", userRoutes); //domain/api/v1/user
 appRouter.use("/classroom", classroomRoutes)
 appRouter.use("/message", messageRoutes)
 appRouter.use("/upload", uploadRoutes)
+appRouter.use("/subject", subjectRoutes)
 
 export default appRouter;

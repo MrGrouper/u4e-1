@@ -1,8 +1,14 @@
 import Classroom from "../models/Classroom.js";
-import openai from "../config/openai-config.js";
+import { openai } from "../config/openai-config.js";
 export const createClassroom = async (req, res) => {
-    const thread = await openai.beta.threads.create();
-    console.log(thread);
+    const thread = await openai.beta.threads.create({
+        messages: [
+            {
+                role: 'user',
+                content: `Use the curriculum available at the following link to teach the student:`
+            }
+        ]
+    });
     const newClassroom = new Classroom({
         members: [req.body.senderId, req.body.receiverId],
         subject: req.body.subject,

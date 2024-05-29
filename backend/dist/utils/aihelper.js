@@ -1,4 +1,4 @@
-import openai from "../config/openai-config.js";
+import { openai } from "../config/openai-config.js";
 export const assistantId = process.env.OPENAI_ASSISTANT_ID;
 export const runAiAssistant = async (threadId, content, role) => {
     await openai.beta.threads.messages.create(threadId, {

@@ -11,6 +11,7 @@ import { useAuth } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Onboard from "./pages/Onboard";
 import AccountSettings from "./pages/AccountSettings";
+import AddSubject from "./pages/AddSubject";
 // import Footer from "./components/footer/Footer";
 // import { Socket, io }from 'socket.io-client';
 // import { ServerToClientEvents, ClientToServerEvents } from "../typing"
@@ -78,6 +79,9 @@ function App() {
         )}
         {auth?.isLoggedIn && auth.user && (
           <Route path="/onboard" element={<Onboard />} />
+        )}
+        {auth?.isLoggedIn && auth.user && (
+          <Route path="/addsubject" element={<AddSubject />} />
         )}
         {auth?.isLoggedIn && auth.user && (
           <Route path="/dashboard" element={<Dashboard />} />

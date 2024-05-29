@@ -1,5 +1,5 @@
 
-import openai from "../config/openai-config.js";
+import { openai } from "../config/openai-config.js";
 
 export const assistantId = process.env.OPENAI_ASSISTANT_ID
 
