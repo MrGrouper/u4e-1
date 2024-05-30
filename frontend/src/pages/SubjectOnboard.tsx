@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import SubjectImage from "../components/subject/subjectImage";
+import SubjectVideos from "../components/subject/subjectVideos";
 
 
 const SubjectOnboard = () => {
@@ -36,7 +37,9 @@ const SubjectOnboard = () => {
       >
         <SubjectImage
         subject = {data}
-        
+        />
+        <SubjectVideos 
+        subject = {data}
         />
          
       </Box>

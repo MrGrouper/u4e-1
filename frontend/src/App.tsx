@@ -99,7 +99,7 @@ function App() {
             }
           />
         )}
-                {auth?.isLoggedIn && auth.user && (
+        {auth?.isLoggedIn && auth.user && (
           <Route path="/:id/subject-image" element={<SubjectOnboard />} />
         )}
         <Route path="*" element={<NotFound />} />
