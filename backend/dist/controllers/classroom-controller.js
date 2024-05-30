@@ -1,11 +1,13 @@
 import Classroom from "../models/Classroom.js";
 import { openai } from "../config/openai-config.js";
-export const createClassroom = async (req, res) => {
+import Subject from "../models/Subject.js";
+export const createClassroom = async (req, res, next) => {
+    const subject = await Subject.findById(req.body.subject);
     const thread = await openai.beta.threads.create({
         messages: [
             {
                 role: 'user',
-                content: `Use the curriculum available at the following link to teach the student:`
+                content: `You are teaching ${subject.name} please use the curriculum that matches ${subject.vectorStoreFileId}`
             }
         ]
     });
@@ -23,7 +25,7 @@ export const createClassroom = async (req, res) => {
         res.status(500).json(error);
     }
 };
-export const userClassrooms = async (req, res) => {
+export const userClassrooms = async (req, res, next) => {
     try {
         const classroom = await Classroom.find({
             members: { $in: [req.params.userId] },
@@ -34,7 +36,7 @@ export const userClassrooms = async (req, res) => {
         res.status(500).json(error);
     }
 };
-export const findClassroom = async (req, res) => {
+export const findClassroom = async (req, res, next) => {
     try {
         const classroom = await Classroom.findOne({
             members: { $all: [req.params.firstId, req.params.secondId] },

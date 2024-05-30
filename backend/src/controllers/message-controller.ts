@@ -17,7 +17,11 @@ type Message = {
 
 export const assistantId = process.env.OPENAI_ASSISTANT_ID;
 
-export const addMessage = async (req, res) => {
+export const addMessage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { classroomId, senderId, text, teacherStudent, role } = req.body;
   const classroom = await Classroom.findById(classroomId);
   console.log("classroom", classroom);
@@ -40,7 +44,11 @@ export const addMessage = async (req, res) => {
   }
 };
 
-export const generateChatCompletion = async (req, res) => {
+export const generateChatCompletion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { classroomId, senderId, text, teacherStudent, role } = req.body;
   const classroom = await Classroom.findById(classroomId).populate("messages");
   const message = new Message({
@@ -80,7 +88,11 @@ export const generateChatCompletion = async (req, res) => {
   }
 };
 
-export const sendInitialChatRequest = async (req, res) => {
+export const sendInitialChatRequest = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { subject, senderId, threadId, id } = req.body;
   const classroom = await Classroom.findById(id).populate("messages");
   const student = await User.findById(senderId)
@@ -171,7 +183,11 @@ export const sendInitialChatRequest = async (req, res) => {
 //   }
 // };
 
-export const getMessages = async (req, res) => {
+export const getMessages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { classroomId } = req.params;
   try {
     const result = await Message.find({ classroomId });

@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
-    subjects: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subject'
-    },
+    subjects: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subject'
+        }],
     avatarUrl: {
         type: String,
         required: false

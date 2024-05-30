@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard";
 import Onboard from "./pages/Onboard";
 import AccountSettings from "./pages/AccountSettings";
 import AddSubject from "./pages/AddSubject";
+import TeacherSignup from "./pages/TeacherSignup";
+import SubjectOnboard from "./pages/SubjectOnboard";
 // import Footer from "./components/footer/Footer";
 // import { Socket, io }from 'socket.io-client';
 // import { ServerToClientEvents, ClientToServerEvents } from "../typing"
@@ -73,7 +75,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        
+        <Route path="/teachersignup" element={<TeacherSignup />} />
         {auth?.isLoggedIn && auth.user && (
           <Route path="/account-settings" element={<AccountSettings />} />
         )}
@@ -96,6 +98,9 @@ function App() {
               />
             }
           />
+        )}
+                {auth?.isLoggedIn && auth.user && (
+          <Route path="/:id/subject-image" element={<SubjectOnboard />} />
         )}
         <Route path="*" element={<NotFound />} />
       </Routes>

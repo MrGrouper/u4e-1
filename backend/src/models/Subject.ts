@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Types } from "mongoose";
 
 
 
@@ -7,13 +8,23 @@ const subjectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    courseDescription: {
+        type: String
+    },
     teacherId: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     curriculum: {
         type: String,
         required: true
+    },
+    vectorStoreFileId: {
+        type: String,
+        required: true
+    },
+    imageUrl: {
+        type: String
     },
     videos: {
         type: Array

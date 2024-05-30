@@ -9,31 +9,40 @@ import {
 // import { updateUser } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
 import CustomizedInput from "../shared/CustomizedInput";
+import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router-dom";
 
 const CreateSubject = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
 
   const [curriculum, setCurriculum] = useState<any>(null);
+
 
   // const [currentUser, setCurrentUser] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const subjectName = data.get("subjectname") as string;
+    const courseDescription = data.get("courseDescription") as string;
+    console.log('coursedesc', courseDescription)
     if (curriculum) {
-      const data = new FormData(e.currentTarget);
-      const subjectName = data.get("subjectname") as string;
       data.append("curriculum", curriculum);
       try {
-        const curriculumUrl = await uploadCurriculum(data);
-        // const newUserInfo = {...currentUser, avatarUrl: imageUrl}
-        // const updatedUser = await updateUser(newUserInfo)
-        // setCurrentUser(updatedUser)
-        await sendCreateSubject({
+        const uploadCurriculumRes = await uploadCurriculum(data);
+        const newSubject = await sendCreateSubject({
           name: subjectName,
           teacherId: auth.user._id,
-          curriculum: curriculumUrl,
+          curriculum: uploadCurriculumRes.curriculumUrl,
+          vectorStoreFileId: uploadCurriculumRes.vectorStoreFileId,
+          courseDescription: courseDescription,
+          imageUrl: null,
+          videos: null
         });
+        console.log(newSubject)
         toast.success("Course created!");
+        navigate(`/${newSubject.id}/subject-image`, {state: newSubject})
       } catch (error) {
         console.log(error);
         toast.error("Could not create course");
@@ -49,15 +58,7 @@ const CreateSubject = () => {
   };
 
   return (
-    //   <Box
-    //     display={"flex"}
-    //     flex={{ xs: 1, md: 0.5 }}
-    //     justifyContent={"center"}
-    //     alignItems={"center"}
-    //     padding={2}
-    //     ml={"auto"}
-    //     mt={16}
-    //   >
+        
     <form
       onSubmit={handleSubmit}
       style={{
@@ -73,22 +74,49 @@ const CreateSubject = () => {
       }}
     >
       <Box
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        paddingBottom={"15px"}
+      sx={{
+        alignContent: "center",
+        paddingBottom: '15px'
+      
+      }}
       >
-        <Typography>Add Curriculum</Typography>
+      <Typography variant="h3">Add New Course</Typography>
       </Box>
+      <CustomizedInput type="text" name="subjectname" label="Course Name" />
 
-      <CustomizedInput type="text" name="subjectname" label="Subject name" />
+      <TextField
+      margin="normal"
+      InputLabelProps={{ style: { color: "white" } }}
+      name="courseDescription"
+      label="Course Description"
+      type="text"
+      multiline
+      rows={5}
+      InputProps={{
+        style: {
+          width: "400px",
+          borderRadius: 10,
+          fontSize: 12,
+          color: "white",
+        },
+      }}
+    />
+    <Box
+    sx={{
+      mt: '8px',
+      border: '1px solid white',
+      borderRadius: '10px',
+      padding: "16px"
 
+    }}>
+    <Typography>Add Curriculum File</Typography>
       <input
         type="file"
         accept=".pdf, .doc, .docx"
         multiple={false}
         onChange={handleChange}
       />
+      </Box>
 
       <Button
         type="submit"
@@ -109,7 +137,7 @@ const CreateSubject = () => {
         Create Class
       </Button>
     </form>
-    //   </Box>
+
   );
 };
 

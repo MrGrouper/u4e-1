@@ -13,6 +13,10 @@ type Subject = {
   name: string,
   teacherId: Types.ObjectId | string,
   curriculum: string,
+  vectorStoreFileId: string, 
+  courseDescription: string,
+  imageUrl: string,
+  videos:string[]
 }
 
 
@@ -238,3 +242,26 @@ export const sendCreateSubject = async (subject: Subject) => {
   const data = await res.data;
   return data;
 };
+
+export const getSubject = async ( id: string | Types.ObjectId | undefined) => {
+
+  const res = await axios.get(`/subject/${id}`);
+  if (res.status !== 200) {
+    throw new Error("Unable to get subject");
+  }
+  
+  const data = await res.data;
+  
+  return data;
+  };
+
+  export const updateSubject = async (subject) => {
+    const res = await axios.put(`/subject/${subject.id}/update`, subject );
+    // console.log(res)
+    if (res.status !== 200) {
+      throw new Error("Unable to update subject");
+    }
+  
+    const data = await res.data;
+    return data;
+  };

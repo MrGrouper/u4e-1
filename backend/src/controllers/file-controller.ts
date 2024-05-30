@@ -69,16 +69,16 @@ export const curriculumUpload = async (
             file: convertedFile,
             purpose: 'assistants'
         })
-
-        await openai.beta.vectorStores.files.create(vectorStoreId, {
+        console.log('upload response', uploadResponse)
+        const vectorStoreFile = await openai.beta.vectorStores.files.create(vectorStoreId, {
             file_id: uploadResponse.id
         })
         // await openai.beta.assistants.update(assistantId, {
         //     tool_resources: { file_search: { vector_store_ids: [vectorStoreId] } },
         //   });
 
-        res.status(200).json(publicUrl)
-        console.log('curriculum saved', publicUrl)
+        res.status(200).json({curriculumUrl: publicUrl, vectorStoreFileId: vectorStoreFile.id})
+        console.log('curriculum saved', vectorStoreFile.id)
     }
     catch(error){
         res.status(500).json(error)

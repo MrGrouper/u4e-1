@@ -3,21 +3,19 @@ import { useEffect } from "react";
 import { Box } from "@mui/material";
 // import CustomizedInput from "../components/shared/CustomizedInput";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import CreateSubject from "../components/account/CreateSubject";
+import { useNavigate, useLocation } from "react-router-dom";
+import SubjectImage from "../components/subject/subjectImage";
 
 
-
-const AddSubject = () => {
+const SubjectOnboard = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const location = useLocation()
+  const data = location.state
 
   useEffect(() => {
     if (!auth?.user) {
       return navigate("/login");
-    }
-    if (auth.user.isTeacher == false) {
-        return navigate("/dashboard")
     }
   }, [auth, navigate]);
 
@@ -36,11 +34,14 @@ const AddSubject = () => {
         ml={"auto"}
         mt={16}
       >
-        <CreateSubject />
+        <SubjectImage
+        subject = {data}
+        
+        />
          
       </Box>
     </div>
   );
 };
 
-export default AddSubject;
+export default SubjectOnboard;
