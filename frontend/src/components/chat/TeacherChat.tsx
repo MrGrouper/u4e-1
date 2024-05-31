@@ -10,7 +10,7 @@ import { IconButton } from "@mui/material";
 type Classroom = {
   id: string;
   members: string[];
-  subject: string;
+  subjectId: string;
   messages: any[];
 };
 type Message = {

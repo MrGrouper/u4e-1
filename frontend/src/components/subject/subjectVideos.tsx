@@ -17,14 +17,15 @@ import { toast } from "react-hot-toast";
 import { Types } from "mongoose";
 
 type Subject = {
-  name: string;
-  teacherId: Types.ObjectId | string;
-  curriculum: string;
-  vectorStoreFileId: string;
-  courseDescription: string;
-  imageUrl: string;
-  videos: string[];
-};
+  name: string,
+  teacherId: Types.ObjectId | string,
+  curriculum: string,
+  vectorStoreFileId: string, 
+  courseDescription: string,
+  imageUrl: string,
+  videos:string[], 
+  classrooms: Types.ObjectId[]
+}
 
 const SubjectVideos = (props: { subject: Subject }) => {
   const auth = useAuth();
@@ -84,7 +85,7 @@ const SubjectVideos = (props: { subject: Subject }) => {
         width: "600px"
       }}
     >
-      <Typography variant="h2">Add Videos To Your Class</Typography>
+      <Typography variant="h2" textAlign={"center"}>Add Videos To Your Class</Typography>
       <Typography>
         The video ID will be located in the URL of the video page, right after
         the v= URL parameter. In this case, the URL of the video is:
@@ -130,7 +131,7 @@ const SubjectVideos = (props: { subject: Subject }) => {
         padding: "5px",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "start",
+        justifyContent: "center",
         alignContent: "center",
         gap: "10px",
         flexWrap: "wrap",

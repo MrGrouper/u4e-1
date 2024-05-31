@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 type Classroom = {
   id: string;
   members: string[];
-  subject: string;
+  subjectId: string;
   messages: any[];
 };
 

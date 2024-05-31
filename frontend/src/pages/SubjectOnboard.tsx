@@ -4,8 +4,8 @@ import { Box } from "@mui/material";
 // import CustomizedInput from "../components/shared/CustomizedInput";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import SubjectImage from "../components/subject/subjectImage";
-import SubjectVideos from "../components/subject/subjectVideos";
+import SubjectImage from "../components/subject/SubjectImage";
+import SubjectVideos from "../components/subject/SubjectVideos";
 
 
 const SubjectOnboard = () => {

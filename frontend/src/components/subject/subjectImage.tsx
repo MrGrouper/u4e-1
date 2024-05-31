@@ -14,7 +14,8 @@ type Subject = {
     vectorStoreFileId: string, 
     courseDescription: string,
     imageUrl: string,
-    videos:string[]
+    videos:string[], 
+    classrooms: Types.ObjectId[]
   }
 
 const SubjectImage = (props: {subject: Subject}) => {

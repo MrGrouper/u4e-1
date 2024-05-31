@@ -29,6 +29,10 @@ const subjectSchema = new mongoose.Schema({
     videos: {
         type: Array
     },
+    classrooms: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Classroom'
+    }]
 
 },
 { timestamps: true },

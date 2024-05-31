@@ -2,23 +2,28 @@ import Classroom from "../models/Classroom.js";
 import { openai } from "../config/openai-config.js";
 import Subject from "../models/Subject.js";
 export const createClassroom = async (req, res, next) => {
-    const subject = await Subject.findById(req.body.subject);
+    const { subjectId, senderId, receiverId } = req.body;
+    console.log('req.body', req.body);
+    const subject = await Subject.findById(subjectId);
+    console.log('subject log', subject);
     const thread = await openai.beta.threads.create({
         messages: [
             {
-                role: 'user',
-                content: `You are teaching ${subject.name} please use the curriculum that matches ${subject.vectorStoreFileId}`
-            }
-        ]
+                role: "user",
+                content: `You are teaching ${subject.name} please use the curriculum that matches ${subject.vectorStoreFileId}`,
+            },
+        ],
     });
     const newClassroom = new Classroom({
-        members: [req.body.senderId, req.body.receiverId],
-        subject: req.body.subject,
+        members: [senderId, receiverId],
+        subjectId: subjectId,
         threadId: thread.id,
-        messages: []
+        messages: [],
     });
     try {
         const result = await newClassroom.save();
+        subject.classrooms = subject.classrooms.concat(result._id);
+        await subject.save();
         res.status(200).json(result);
     }
     catch (error) {

@@ -50,6 +50,19 @@ export const findSubject = async (
   }
 };
 
+export const findAllSubjects = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const subjects = await Subject.find()
+      res.status(200).json(subjects)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+};
+
 export const subjectUpdate = async (
   req: Request,
   res: Response,

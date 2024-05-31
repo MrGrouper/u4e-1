@@ -3,15 +3,19 @@ import mongoose from "mongoose";
 
 
 const classroomSchema = new mongoose.Schema({
-    subject: {
-        type: String,
+
+    subjectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subject',
         required: true
     },
     members: {
         type: Array,
+        required: true,
     },
     threadId: {
-        type: String
+        type: String,
+        required: true
     },
     messages: [
         {

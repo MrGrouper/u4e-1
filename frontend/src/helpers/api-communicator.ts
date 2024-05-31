@@ -17,6 +17,7 @@ type Subject = {
   courseDescription: string,
   imageUrl: string,
   videos:string[]
+  classrooms: Types.ObjectId[] | string[]
 }
 
 
@@ -77,7 +78,6 @@ export const sendCreateClassroomRequest = async (req: object) => {
 };
 
 export const sendInitialChatRequest = async (classroom: object, senderId: any) => {
-  console.log("apicom", classroom,senderId )
   const req = {...classroom, senderId: senderId}
   console.log("req", req)
   const res = await axios.post("/message/initialize", req )
@@ -254,6 +254,18 @@ export const getSubject = async ( id: string | Types.ObjectId | undefined) => {
   
   return data;
   };
+
+  export const getAllSubjects = async () => {
+
+    const res = await axios.get(`/subject`);
+    if (res.status !== 200) {
+      throw new Error("Unable to get subject");
+    }
+    
+    const data = await res.data;
+    
+    return data;
+    };
 
   export const updateSubject = async (subject) => {
     const res = await axios.put(`/subject/${subject.id}/update`, subject );

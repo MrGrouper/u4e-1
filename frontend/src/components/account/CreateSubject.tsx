@@ -38,7 +38,8 @@ const CreateSubject = () => {
           vectorStoreFileId: uploadCurriculumRes.vectorStoreFileId,
           courseDescription: courseDescription,
           imageUrl: null,
-          videos: null
+          videos: null,
+          classrooms: null
         });
         console.log(newSubject)
         toast.success("Course created!");
