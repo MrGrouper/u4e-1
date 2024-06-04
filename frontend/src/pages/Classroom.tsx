@@ -3,16 +3,19 @@
 import { Box, Avatar, Typography, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
 // import red from "@mui/material/colors/red";
 // import { useAuth } from "../context/AuthContext";
-import { useLocation } from "react-router-dom";
+import { getClassroomById, getSubject } from "../helpers/api-communicator";
+import { useParams } from "react-router-dom";
 import TeacherChat from "../components/chat/TeacherChat";
 import AiChat from "../components/chat/AiChat";
 import ChatDrawer from "../components/drawer/ChatDrawer";
+import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
 // import {Socket, io} from "socket.io-client";
 // import AiChat from "../components/chat/aiChat";
 
 // import ChatItem from "../components/chat/ChatItem";
 // import { IoMdSend } from "react-icons/io";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import {
 //   deleteUserChats,
 //   getUserChats,
@@ -23,11 +26,49 @@ import ChatDrawer from "../components/drawer/ChatDrawer";
 
 // const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
   const Classroom = () => {
-  const location = useLocation();
-  const { data, currentUser } = location.state;
+    const auth = useAuth()
+    const currentUser = auth.user
+    const { id } = useParams()
+    const navigate = useNavigate()
+
+    console.log('id', id)
+
+  // const location = useLocation();
+  // const { data, currentUser } = location.state;
+
+  const [data, setData] = useState(null)
+  const [subject, setSubject] = useState(null)
+
+  useEffect(() => {
+    if (!auth?.user) {
+      return navigate("/login");
+    }
+  }, [auth, navigate]);
+
+  useEffect(() => {
+
+    const handleData = async () => {
+      try {
+      const classroom = await getClassroomById(id)
+      const subject = await getSubject(classroom.subjectId)
+      console.log([classroom, subject])
+      setData(classroom)
+      setSubject(subject)
+    }
+      catch (error) {
+        console.log(error)
+    }}
+    if (auth?.isLoggedIn && auth.user){
+      handleData()
+    }
+
+}, []);
+
+
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("lg"))
 
+  if (subject){
   return (
     <>
       <Box
@@ -85,7 +126,7 @@ import ChatDrawer from "../components/drawer/ChatDrawer";
                 color: "#e8e4e6",
               }}
             >
-              Welcome to {data.subject}.
+              Welcome to {subject.name}.
             </Typography>
             <Typography
               variant="h3"
@@ -125,7 +166,7 @@ import ChatDrawer from "../components/drawer/ChatDrawer";
                 color: "#e8e4e6",
               }}
             >
-              You are instructing {data.subject}.
+              You are instructing {subject.name}.
             </Typography>
             <Typography
               variant="h3"
@@ -157,6 +198,8 @@ import ChatDrawer from "../components/drawer/ChatDrawer";
         </Box>
     </>
   );
-};
+}
+else {return (<></>)}
+  }
 
 export default Classroom;

@@ -4,7 +4,7 @@ import { verifyToken } from "../utils/token-manager.js";
 import { createSubject, findAllSubjects, findSubject, subjectUpdate } from '../controllers/subject-controller.js';
 const subjectRoutes = Router();
 subjectRoutes.post('/new', verifyToken, createSubject);
-subjectRoutes.get('/:subjectId', findSubject);
+subjectRoutes.get('/:id', findSubject);
 subjectRoutes.get('/', findAllSubjects);
 subjectRoutes.put("/:id/update", verifyToken, subjectUpdate);
 export default subjectRoutes;

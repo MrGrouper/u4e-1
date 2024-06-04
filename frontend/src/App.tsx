@@ -14,6 +14,8 @@ import AccountSettings from "./pages/AccountSettings";
 import AddSubject from "./pages/AddSubject";
 import TeacherSignup from "./pages/TeacherSignup";
 import SubjectOnboard from "./pages/SubjectOnboard";
+import Portal from "./pages/Portal";
+import AboutCourse from "./pages/AboutCourse";
 // import Footer from "./components/footer/Footer";
 // import { Socket, io }from 'socket.io-client';
 // import { ServerToClientEvents, ClientToServerEvents } from "../typing"
@@ -76,17 +78,21 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/teachersignup" element={<TeacherSignup />} />
+        <Route path="/course/:id" element={<AboutCourse />} />
         {auth?.isLoggedIn && auth.user && (
           <Route path="/account-settings" element={<AccountSettings />} />
         )}
         {auth?.isLoggedIn && auth.user && (
           <Route path="/onboard" element={<Onboard />} />
         )}
-        {auth?.isLoggedIn && auth.user && (
+        {auth?.isLoggedIn && auth.user.isTeacher == true && (
           <Route path="/addsubject" element={<AddSubject />} />
         )}
-        {auth?.isLoggedIn && auth.user && (
+        {auth?.isLoggedIn && auth.user.isTeacher == false && (
           <Route path="/dashboard" element={<Dashboard />} />
+        )}
+        {auth?.isLoggedIn && auth.user.isTeacher == true && (
+          <Route path="/portal" element={<Portal />} />
         )}
         {auth?.isLoggedIn && auth.user && (
           <Route

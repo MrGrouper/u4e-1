@@ -51,7 +51,7 @@ const UserInfo = () => {
         padding={2}
         fontWeight={600}
       >
-        Signup
+        Edit User Info
       </Typography>
       <CustomizedInput type="text" name="firstname" label="First name" />
       <CustomizedInput type="text" name="lastname" label="Last name" />
@@ -73,7 +73,7 @@ const UserInfo = () => {
         }}
         endIcon={<IoIosLogIn />}
       >
-        Signup
+        Save Edits
       </Button>
     </Box>
   </form>

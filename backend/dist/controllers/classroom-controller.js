@@ -52,4 +52,14 @@ export const findClassroom = async (req, res, next) => {
         res.status(500).json(error);
     }
 };
+export const findClassroomById = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const classroom = await Classroom.findById(id);
+        res.status(200).json(classroom);
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+};
 //# sourceMappingURL=classroom-controller.js.map

@@ -26,9 +26,11 @@ export const createSubject = async (req, res, next) => {
     }
 };
 export const findSubject = async (req, res, next) => {
-    const id = req.params;
+    const { id } = req.params;
+    console.log('id', req);
     try {
-        const subject = await Subject.findOne(id);
+        const subject = await Subject.findById(id);
+        console.log('subject', subject);
         if (subject) {
             res.status(200).json(subject);
         }

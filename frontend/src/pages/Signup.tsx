@@ -14,7 +14,7 @@ const Signup = () => {
   
   useEffect(() => {
     if (auth?.user) {
-      return navigate("/onboard");
+      return navigate("/login");
     }
   }, [auth]);
 
@@ -29,6 +29,7 @@ const Signup = () => {
       toast.loading("Signing Up", { id: "signup" });
       await auth?.studentSignup(firstname, lastname, email, password);
       toast.success("Signed Up Successfully", { id: "signup" });
+      navigate("/onboard");
     } catch (error) {
       console.log(error);
       toast.error("Signing Up Failed", { id: "signup" });

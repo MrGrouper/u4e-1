@@ -39,9 +39,11 @@ export const findSubject = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.params
+  const {id} = req.params
+  console.log('id', req)
   try {
-    const subject = await Subject.findOne(id)
+    const subject = await Subject.findById(id)
+    console.log('subject', subject)
     if (subject){ 
       res.status(200).json(subject)
     }

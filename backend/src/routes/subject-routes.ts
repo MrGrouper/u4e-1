@@ -6,7 +6,7 @@ import { createSubject, findAllSubjects, findSubject, subjectUpdate } from '../c
 const subjectRoutes = Router()
 
 subjectRoutes.post('/new', verifyToken, createSubject);
-subjectRoutes.get('/:subjectId', findSubject )
+subjectRoutes.get('/:id', findSubject )
 subjectRoutes.get('/', findAllSubjects )
 subjectRoutes.put("/:id/update", verifyToken, subjectUpdate)
 

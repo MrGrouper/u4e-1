@@ -68,3 +68,17 @@ export const findClassroom = async (
     res.status(500).json(error);
   }
 };
+
+export const findClassroomById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {id} = req.params
+  try {
+    const classroom = await Classroom.findById(id);
+    res.status(200).json(classroom);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

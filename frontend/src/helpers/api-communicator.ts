@@ -191,6 +191,18 @@ const data = await res.data;
 return data;
 };
 
+export const getClassroomById = async ( id: string | Types.ObjectId | undefined) => {
+
+  const res = await axios.get(`/classroom/findbyid/${id}`);
+  if (res.status !== 200) {
+    throw new Error("Unable to get classroom");
+  }
+  
+  const data = await res.data;
+  
+  return data;
+  };
+
 export const uploadImage = async (formData: FormData) => {
   const config = {
     headers: {

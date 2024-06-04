@@ -24,52 +24,13 @@ const Dashboard = () => {
     }
   }, [auth?.isLoggedIn, auth.user]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
       getAllSubjects().then((data) => {
-        setAvailableSubjects(data)
-    })
-  }
-  },[auth?.isLoggedIn, auth.user])
-
-  useEffect(()=>{
-    if (auth?.isLoggedIn && auth.user) {
-      const classroomSubjectIds = new Set(classrooms.map(classroom => classroom.subjectId));
-      console.log('classroomSubjectIds', classroomSubjectIds)
-
-      // Step 2: Use reduce to collect matching subjects
-      const matchingSubjects = availableSubjects.reduce((acc, subject) => {
-        console.log('acc,sub',acc, subject)
-        if (classroomSubjectIds.has(subject.id)) {
-          acc.push(subject);
-        }
-        return acc;
-      }, []);
-      console.log('matchingSubjects', matchingSubjects)
-      
-      setEnrolledSubjects(matchingSubjects)
+        setAvailableSubjects(data);
+      });
     }
-  },[classrooms, availableSubjects])
-
-  // useEffect(() => {
-  //   const fetchAvailableSubjects = async () => {
-  //     const allSubjects = await getAllSubjects();
-  //     const userClassroomsSet = new Set(
-  //       classrooms.map((classroom) => classroom.id)
-  //     );
-  //     const availableResults = allSubjects.filter(
-  //       (subject) => !userClassroomsSet.has(subject.classrooms)
-  //     );
-  //     setAvailableSubjects(availableResults);
-  //     const enrolledResults = allSubjects.filter((subject) =>
-  //       userClassroomsSet.has(subject.classrooms)
-  //     );
-  //     setEnrolledSubjects(enrolledResults);
-  //   };
-  //   if (auth?.isLoggedIn && auth.user) {
-  //     fetchAvailableSubjects();
-  //   }
-  // }, [classrooms]);
+  }, [auth?.isLoggedIn, auth.user]);
 
   useEffect(() => {
     if (!auth?.user) {
@@ -77,25 +38,17 @@ const Dashboard = () => {
     }
   }, [auth, navigate]);
 
-  // const handleEnroll = async (subject, teacherId) => {
-  //   const req = {
-  //     senderId: user._id,
-  //     receiverId: teacherId,
-  //     subject: subject
-  //   }
+  const handleEnroll = (subject) => {
+    setEnrolledSubjects([...enrolledSubjects, subject]);
+    getUserClassrooms(auth.user._id).then((data) => {
+      setClassrooms(data);
+    });
+  };
 
-  //   try{
-  //     toast.loading('enrolling...')
-  //     const data = await sendCreateClassroomRequest(req)
-  //     await sendInitialChatRequest(data, req.senderId)
-  //     toast.dismiss()
-  //     setClassrooms([...classrooms, data])
-
-  //   } catch {
-  //     console.log("cannot create classroom")
-  //     toast.error('could not generate response')
-
-  // }}
+  const subjectMap = availableSubjects.reduce((map, subject) => {
+    map[subject.id] = subject;
+    return map;
+  }, {});
 
   if (user.isTeacher === false) {
     return (
@@ -109,9 +62,18 @@ const Dashboard = () => {
               flexWrap: "wrap",
             }}
           >
-            {enrolledSubjects.map((subject, index) => 
-              <CourseCard subject={subject} isEnrolled={true} key={index} onEnroll={()=>{console.log(`yo`)}}/>
-            )}
+            {classrooms.map((classroom) => {
+              const subject = subjectMap[classroom.subjectId];
+              return subject ? (
+                <CourseCard
+                  subject={subject}
+                  classroomId={classroom.id}
+                  isEnrolled={true}
+                  key={`enrolled-${classroom.id}`}
+                  onEnroll={() => handleEnroll(subject)}
+                />
+              ) : null;
+            })}
           </Box>
 
           <div>
@@ -123,8 +85,16 @@ const Dashboard = () => {
                 flexWrap: "wrap",
               }}
             >
-              {availableSubjects.map((subject, index) => (
-                <CourseCard subject={subject} key={index} isEnrolled={false} onEnroll={()=>setEnrolledSubjects(enrolledSubjects.concat(subject))} />
+              {availableSubjects.map((subject) => (
+                <CourseCard
+                  key={`all-${subject.id}`}
+                  classroomId={null}
+                  subject={subject}
+                  isEnrolled={classrooms.some((classroom) =>
+                    subject.classrooms.includes(classroom.id)
+                  )}
+                  onEnroll={() => handleEnroll(subject)}
+                />
               ))}
             </Box>
           </div>
@@ -137,7 +107,7 @@ const Dashboard = () => {
         <h1>Active classes</h1>
         <div className="Classroom-List">
           {classrooms.map((classroom) => (
-            <Class data={classroom} currentUser={auth?.user} />
+            <Class data={classroom} currentUser={auth?.user} key={classroom.id} />
           ))}
         </div>
       </div>
