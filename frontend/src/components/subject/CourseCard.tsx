@@ -72,7 +72,11 @@ const CourseCard = (props: { subject: Subject, classroomId, isEnrolled, onEnroll
       {(auth?.isLoggedIn && auth.user) ? 
         auth.user.isTeacher ? (
           <CardActions color="#004643">
-            <Button size="small" variant="outlined">
+            <Button 
+              component={Link} 
+              to={`/${props.subject.id}/update`}
+              size="small" 
+              variant="outlined" >
               Edit Course
             </Button>
           </CardActions>

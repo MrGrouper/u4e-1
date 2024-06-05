@@ -95,7 +95,7 @@ const SubjectImage = (props: {subject: Subject}) => {
           paddingBottom={'15px'}
           >
           {currentSubject && currentSubject.imageUrl  ? 
-          <Typography>Change Image</Typography> 
+          <Typography variant="h4">Change Image</Typography> 
           :
           <Typography>Add Image</Typography>
           }

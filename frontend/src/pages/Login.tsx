@@ -23,9 +23,13 @@ const Login = () => {
     }
   };
   useEffect(() => {
-    if (auth?.user) {
-      return navigate("/dashboard");
+    if (auth?.user && auth.isLoggedIn && auth.user.isTeacher) {
+      return navigate("/portal");
     }
+    else if (auth?.user && auth.isLoggedIn && !auth.user.isTeacher) {
+    return navigate("/dashboard");
+    }
+    else return navigate('/login')
   }, [auth]);
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>

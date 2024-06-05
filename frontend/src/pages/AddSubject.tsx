@@ -13,18 +13,15 @@ const AddSubject = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!auth.user) {
       return navigate("/login");
     }
     if (auth.user.isTeacher == false) {
         return navigate("/dashboard")
     }
-  }, [auth, navigate]);
+  }, []);
 
   
-
-
-
   return (
     <div>
       <Box
@@ -41,6 +38,7 @@ const AddSubject = () => {
       </Box>
     </div>
   );
+
 };
 
 export default AddSubject;

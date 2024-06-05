@@ -1,11 +1,10 @@
-// import  { useEffect, useState } from "react";
+import { useState } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
-import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Classroom from "./pages/Classroom";
-// import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
@@ -16,100 +15,83 @@ import TeacherSignup from "./pages/TeacherSignup";
 import SubjectOnboard from "./pages/SubjectOnboard";
 import Portal from "./pages/Portal";
 import AboutCourse from "./pages/AboutCourse";
-// import Footer from "./components/footer/Footer";
-// import { Socket, io }from 'socket.io-client';
-// import { ServerToClientEvents, ClientToServerEvents } from "../typing"
-
-// const socket: Socket<ServerToClientEvents, ClientToServerEvents > = io("https://u4e-zjbtlzdxca-uc.a.run.app:80",{
-//   withCredentials: true,
-//   extraHeaders: {
-//     "my-custom-header": "abcd"
-//   },
-//   transports: ["websocket"]
-// });
-
-// socket.on("connect", () => {
-//   console.log(`client ${socket.id}`)
-// })
+import TeacherCodeForm from "./pages/TeacherCodeForm";
+import SubjectUpdate from "./pages/SubjectUpdate";
+import UserDrawer from "./components/drawer/UserDrawer";
+import { Box } from "@mui/material";
 
 function App() {
   const auth = useAuth();
+  const location = useLocation();
+  const [isCodeValid, setIsCodeValid] = useState(false);
 
-  // // const [onlineUsers, setOnlineUsers] = useState([]);
-  // const [socketMessage, setSocketMessage] = useState(null)
-  // const [receivedMessage, setReceivedMessage] = useState(null);
+  const handleValidCode = () => {
+    setIsCodeValid(true);
+  };
 
-  // // Connect to Socket.io Remove?
-  // // useEffect(() => {
-  // //   socket.current= io("ws://localhost:8800");
-  // //   socket.current.emit("new-user-add", user?._id);
-  // //   socket.current.on("get-users", (users) => {
-  // //     setOnlineUsers(users);
-  // //   });
-  // // }, [user]);
+  // List of paths where the header should be displayed
+  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/course/:id"];
 
-  // // Send Message to socket server
-  // useEffect(() => {
-  //   if (socketMessage!==null) {
-  //     socket.emit("clientMessage", socketMessage );
-  //   }
-  // }, [socketMessage]);
-
-  // const handleSetSocketMessage = (data) => {
-  //   setSocketMessage(data)
-  // }
-
-  // const handleSetReceivedMessage = (data) =>
-  //   setReceivedMessage(data)
-
-  // // Get the message from socket server
-  // useEffect(() => {
-  //   socket.on("serverMessage", (data) => {
-  //     handleSetReceivedMessage(data);
-  //   }
-  //   );
-  // }, []);
+  // Check if the current path matches any of the header paths
+  const showHeader = headerPaths.some(path => 
+    new RegExp(`^${path.replace(/:[^\s/]+/g, '([^/]+)')}$`).test(location.pathname)
+  );
 
   return (
-    <main>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/teachersignup" element={<TeacherSignup />} />
-        <Route path="/course/:id" element={<AboutCourse />} />
-        {auth?.isLoggedIn && auth.user && (
-          <Route path="/account-settings" element={<AccountSettings />} />
-        )}
-        {auth?.isLoggedIn && auth.user && (
-          <Route path="/onboard" element={<Onboard />} />
-        )}
-        {auth?.isLoggedIn && auth.user.isTeacher == true && (
-          <Route path="/addsubject" element={<AddSubject />} />
-        )}
-        {auth?.isLoggedIn && auth.user.isTeacher == false && (
-          <Route path="/dashboard" element={<Dashboard />} />
-        )}
-        {auth?.isLoggedIn && auth.user.isTeacher == true && (
-          <Route path="/portal" element={<Portal />} />
-        )}
-        {auth?.isLoggedIn && auth.user && (
+    <main style={{ display: 'flex' }}>
+      {showHeader ? (
+        <Header />
+      ) : (
+        <UserDrawer auth={auth}/>
+      )}
+      <Box component="main" sx={{ flexGrow: 1, p: 3,
+      backgroundColor: 'var(--background)' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
-            path="/classroom/:id"
+            path="/teachersignup"
             element={
-              <Classroom
-              // handleSetSocketMessage = {handleSetSocketMessage}
-              // receivedMessage = {receivedMessage}
-              />
+              isCodeValid ? <TeacherSignup /> : <TeacherCodeForm onValidCode={handleValidCode} />
             }
           />
-        )}
-        {auth?.isLoggedIn && auth.user && (
-          <Route path="/:id/subject-image" element={<SubjectOnboard />} />
-        )}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="/course/:id" element={<AboutCourse />} />
+          {auth?.isLoggedIn && auth.user && (
+            <Route path="/account-settings" element={<AccountSettings />} />
+          )}
+          {auth?.isLoggedIn && auth.user && (
+            <Route path="/onboard" element={<Onboard />} />
+          )}
+          {auth?.isLoggedIn && auth.user.isTeacher === true && (
+            <Route path="/addsubject" element={<AddSubject />} />
+          )}
+          {auth?.isLoggedIn && auth.user.isTeacher === false && (
+            <Route path="/dashboard" element={<Dashboard />} />
+          )}
+          {auth?.isLoggedIn && auth.user.isTeacher === true && (
+            <Route path="/portal" element={<Portal />} />
+          )}
+          {auth?.isLoggedIn && auth.user && (
+            <Route
+              path="/classroom/:id"
+              element={
+                <Classroom
+                // handleSetSocketMessage = {handleSetSocketMessage}
+                // receivedMessage = {receivedMessage}
+                />
+              }
+            />
+          )}
+          {auth?.isLoggedIn && auth.user && (
+            <Route path="/:id/onboard" element={<SubjectOnboard />} />
+          )}
+          {auth?.isLoggedIn && auth.user && (
+            <Route path="/:id/update" element={<SubjectUpdate />} />
+          )}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Box>
     </main>
   );
 }

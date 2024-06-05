@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import  AvatarUpload  from "../components/account/AvatarUpload"
+import UserInfo from "../components/account/UserInfo";
 
 
 const AccountSettings = () => {
@@ -33,6 +34,7 @@ const AccountSettings = () => {
         mt={16}
       >
         <AvatarUpload />
+        <UserInfo />
          
       </Box>
     </div>

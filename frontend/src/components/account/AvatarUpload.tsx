@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { Box, Typography, Button, Avatar, Badge } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { uploadImage } from "../../helpers/api-communicator";
-import { updateUser } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
 
 const AvatarUpload = () => {
@@ -32,7 +31,7 @@ const AvatarUpload = () => {
       try {
         const imageUrl = await uploadImage(data);
         const newUserInfo = {...currentUser, avatarUrl: imageUrl}
-        const updatedUser = await updateUser(newUserInfo)
+        const updatedUser = await auth.userUpdate(newUserInfo)
         setCurrentUser(updatedUser)
         toast.success('Image changed!')
       } catch (error) {

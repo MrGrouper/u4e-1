@@ -20,6 +20,17 @@ type Subject = {
   classrooms: Types.ObjectId[] | string[]
 }
 
+type User = {
+  _id: Types.ObjectId,
+  firstname: string;
+  lastname: string;
+  email: string;
+  isAdmin: boolean;
+  isTeacher: boolean;
+  subjects: Array<string>;
+  avatarUrl: string
+};
+
 
 export const loginUser = async (email: string, password: string) => {
   const res = await axios.post("/user/login", { email, password });
@@ -219,7 +230,7 @@ export const uploadImage = async (formData: FormData) => {
   return data;
 };
 
-export const updateUser = async ( user ) => {
+export const updateUser = async ( user: User ) => {
   const res = await axios.put(`/user/${user._id}/update`, user );
   // console.log(res)
   if (res.status !== 200) {

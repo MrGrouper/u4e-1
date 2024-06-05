@@ -6,17 +6,15 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-
 const TeacherSignup = () => {
-  
   const navigate = useNavigate();
   const auth = useAuth();
-  
+
   useEffect(() => {
     if (auth?.user) {
       return navigate("/onboard");
     }
-  }, [auth]);
+  }, [auth, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,16 +23,17 @@ const TeacherSignup = () => {
     const lastname = formData.get("lastname") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+
     try {
       toast.loading("Signing Up", { id: "signup" });
       await auth?.teacherSignup(firstname, lastname, email, password);
       toast.success("Signed Up Successfully", { id: "signup" });
+      navigate("/portal");
     } catch (error) {
       console.log(error);
       toast.error("Signing Up Failed", { id: "signup" });
     }
   };
-
 
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>

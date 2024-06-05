@@ -25,6 +25,7 @@ const Logo = () => {
           mr: "auto",
           fontWeight: "800",
           textShadow: "2px 2px 20px #000",
+          color:"#e8e4e6"
         }}
       >
         <span style={{ fontSize: "20px" }}>U4E</span>ducation

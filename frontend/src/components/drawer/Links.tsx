@@ -15,12 +15,20 @@ export const Links = () => {
                 text="Contribute"
                 textColor="white"
               />
+              {auth.user.isTeacher ? 
+              <NavigationLink
+              bg="transparent"
+              to="/portal"
+              text="Go To Portal"
+              textColor="white"
+            />
+            :
               <NavigationLink
                 bg="transparent"
                 to="/dashboard"
                 text="Go To Dashboard"
                 textColor="white"
-              />              
+              /> }             
               <NavigationLink
               bg="transparent"
               to="/account-settings"

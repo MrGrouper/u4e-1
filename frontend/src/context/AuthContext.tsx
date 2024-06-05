@@ -12,7 +12,8 @@ import {
   loginUser,
   logoutUser,
   signupStudent,
-  signupTeacher
+  signupTeacher,
+  updateUser
 } from "../helpers/api-communicator";
 
 type User = {
@@ -31,6 +32,7 @@ type UserAuth = {
   login: (email: string, password: string) => Promise<void>;
   studentSignup: (firstname: string, lastname: string, email: string, password: string) => Promise<void>;
   teacherSignup: (firstname: string, lastname: string, email: string, password: string) => Promise<void>;
+  userUpdate: (user:User) => Promise<void>;
   logout: () => Promise<void>;
 };
 const AuthContext = createContext<UserAuth | null>(null);
@@ -73,6 +75,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoggedIn(true);
     }
   };
+  const userUpdate = async (user: User) => {
+    const data = await updateUser(user);
+    if (data) {
+      setUser({ _id: data._id, email: data.email, firstname: data.firstname, lastname: data.lastname , isAdmin: data.isAdmin, isTeacher: data.isTeacher, subjects:data.subjects, avatarUrl: data.avatarUrl})
+      setIsLoggedIn(true);
+    }
+
+  };
+
   const logout = async () => {
     await logoutUser();
     setIsLoggedIn(false);
@@ -86,7 +97,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     login,
     logout,
     studentSignup,
-    teacherSignup
+    teacherSignup,
+    userUpdate
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

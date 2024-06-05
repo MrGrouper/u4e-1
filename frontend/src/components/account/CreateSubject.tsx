@@ -43,7 +43,7 @@ const CreateSubject = () => {
         });
         console.log(newSubject)
         toast.success("Course created!");
-        navigate(`/${newSubject.id}/subject-image`, {state: newSubject})
+        navigate(`/${newSubject.id}/onboard`, {state: newSubject})
       } catch (error) {
         console.log(error);
         toast.error("Could not create course");

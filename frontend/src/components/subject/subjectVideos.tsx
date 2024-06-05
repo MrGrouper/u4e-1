@@ -85,7 +85,7 @@ const SubjectVideos = (props: { subject: Subject }) => {
         width: "600px"
       }}
     >
-      <Typography variant="h2" textAlign={"center"}>Add Videos To Your Class</Typography>
+      <Typography variant="h4" textAlign={"center"}>Add Videos To Your Class</Typography>
       <Typography>
         The video ID will be located in the URL of the video page, right after
         the v= URL parameter. In this case, the URL of the video is:
