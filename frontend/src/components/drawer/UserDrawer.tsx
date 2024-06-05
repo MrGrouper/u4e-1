@@ -78,7 +78,8 @@ const UserDrawer = (props: { auth }) => {
 
               <ListItemButton onClick={() => navigate("/account-settings")}>
                 <ListItemIcon>
-                  <AccountCircleIcon />
+                  <AccountCircleIcon 
+                  sx={{color:"white"}}/>
                 </ListItemIcon>
                 <ListItemText primary="Account" />
               </ListItemButton>
@@ -91,7 +92,9 @@ const UserDrawer = (props: { auth }) => {
             <>
               <ListItemButton onClick={() => navigate("/portal")}>
                 <ListItemIcon>
-                  <DashboardCustomizeIcon />
+                  <DashboardCustomizeIcon 
+                  sx={{color:"white"}}
+                  />
                 </ListItemIcon>
                 <ListItemText primary="Portal" />
               </ListItemButton>
@@ -100,7 +103,9 @@ const UserDrawer = (props: { auth }) => {
             <>
               <ListItemButton onClick={() => navigate("/dashboard")}>
                 <ListItemIcon>
-                  <DashboardCustomizeIcon />
+                  <DashboardCustomizeIcon 
+                  sx={{color:"white"}}
+                  />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItemButton>
@@ -164,8 +169,8 @@ const UserDrawer = (props: { auth }) => {
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
             },
+            marginTop:"65px"
           }}
         >
           {drawer}

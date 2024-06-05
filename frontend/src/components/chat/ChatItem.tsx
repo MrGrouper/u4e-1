@@ -40,7 +40,7 @@ const parseMarkdown = (content) => {
   return <span dangerouslySetInnerHTML={renderedText} />;
 };
 
-const ChatItem = ({ content, role }) => {
+const ChatItem = ({ content, role, avatarUrl }) => {
   // Additional parsing for LaTeX goes here if needed
 
   if (role === 'assistant'){
@@ -61,7 +61,7 @@ const ChatItem = ({ content, role }) => {
       />
       
       <Box>
-        <Typography component="div" sx={{ fontSize: '14px' }}>
+        <Typography component="div" sx={{ fontSize: '14px', color: 'white' }}>
           {parseMarkdown(content)}
         </Typography>
       </Box>
@@ -81,12 +81,12 @@ const ChatItem = ({ content, role }) => {
         >
     
           <Avatar 
-          sx={{ ml: '0', bgcolor:'black', color: 'white' }}
-          
+          sx={{ ml: '0', bgcolor:'black' }}
+          src = {avatarUrl}
           >
           </Avatar>
           <Box>
-            <Typography component="div" sx={{ fontSize: '14px' }}>
+            <Typography component="div" sx={{ fontSize: '14px', color: 'white' }}>
               {parseMarkdown(content)}
             </Typography>
           </Box>

@@ -65,7 +65,8 @@ export const generateChatCompletion = async (req, res, next) => {
     }
 };
 export const sendInitialChatRequest = async (req, res, next) => {
-    const { subject, senderId, threadId, id } = req.body;
+    const { subject, senderId, threadId, id, members } = req.body;
+    const teacherId = members.find(memberId => memberId !== senderId);
     const classroom = await Classroom.findById(id).populate("messages");
     const student = await User.findById(senderId);
     const content = `Teacher: You are teaching ${subject}. Your student is named ${student.firstname}. Please use the pdf document that is related to ${subject} that was provided to you. Begin by greeting the student and ask them if they are ready to begin.`;
@@ -80,9 +81,17 @@ export const sendInitialChatRequest = async (req, res, next) => {
                 teacherStudent: false,
                 role: lastMessageForRun.role
             });
+            const initialTeacherMessage = new Message({
+                classroomId: id,
+                senderId: teacherId,
+                text: `Hey ${student.firstname}! Its your instructor here. You can ask me any questions you have in this chatbox`,
+                teacherStudent: true,
+                role: "teacher"
+            });
             const savedChatResponseMessage = await chatResponseMessage.save();
+            initialTeacherMessage.save();
             //@ts-expect-error populate doesnt change type
-            classroom.messages = classroom.messages.concat(savedChatResponseMessage);
+            classroom.messages = classroom.messages.concat(savedChatResponseMessage, initialTeacherMessage);
             await classroom.save();
             res.status(200).json(lastMessageForRun);
         }

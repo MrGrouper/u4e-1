@@ -135,7 +135,7 @@ const handleSend = async () => {
           {messages?.map((message, index) => (
             <>
               <div ref={scroll}>
-                <ChatItem content={message.text} role={message.role} key={index} />
+                <ChatItem content={message.text} role={message.role} key={index} avatarUrl={props.currentUser.avatarUrl}/>
                 {/* <span>{format(message.createdAt)}</span> */}
               </div>
             </>
