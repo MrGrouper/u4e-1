@@ -34,8 +34,8 @@ type User = {
   updatedAt: string;
 };
 
-// const TeacherChat = (props: { classroom: Classroom; currentUser: any; handleSetSocketMessage: any; receivedMessage: any}) => {
-  const TeacherChat = (props: { classroom: Classroom; currentUser: any; }) => {
+const TeacherChat = (props: { classroom: Classroom; currentUser: any; handleSetSocketMessage: any; receivedMessage: any}) => {
+  // const TeacherChat = (props: { classroom: Classroom; currentUser: any; }) => {
   //@ts-expect-error unused
   const [userData, setUserData] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[] | []>([]);
@@ -81,11 +81,11 @@ type User = {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // useEffect(() => {
-  //   if (props.receivedMessage !== null && props.receivedMessage.teacherStudent == true) {
-  //     setMessages([...messages, props.receivedMessage])
-  //   }
-  // },[props.receivedMessage])
+  useEffect(() => {
+    if (props.receivedMessage !== null && props.receivedMessage.teacherStudent == true) {
+      setMessages([...messages, props.receivedMessage])
+    }
+  },[props.receivedMessage])
 
   const handleSend = async () => {
     const content = inputRef.current?.value as string;
@@ -100,7 +100,8 @@ type User = {
       role: props.currentUser.isTeacher ? "teacher" : "student",
     };
     // send message to socket
-    // props.handleSetSocketMessage(message)
+    console.log("Sending message to socket:", message);
+    props.handleSetSocketMessage(message)
 
 
     // send message to database

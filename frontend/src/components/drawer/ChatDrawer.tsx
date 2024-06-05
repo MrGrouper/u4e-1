@@ -8,7 +8,7 @@ import MessageIcon from "@mui/icons-material/Message";
 import TeacherChat from "../chat/TeacherChat";
 
 
-const ChatDrawer = (props: {classroom, currentUser}
+const ChatDrawer = (props: {classroom, currentUser, handleSetSocketMessage, receivedMessage}
 ) => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -27,7 +27,10 @@ const ChatDrawer = (props: {classroom, currentUser}
       >
         <TeacherChat
         classroom = {props.classroom}
-        currentUser={props.currentUser} />
+        currentUser={props.currentUser}
+        handleSetSocketMessage = {props.handleSetSocketMessage} 
+        receivedMessage={props.receivedMessage}
+        />
       </Drawer>
       <IconButton
         sx={{ color: "white", textAlign:'center' }}

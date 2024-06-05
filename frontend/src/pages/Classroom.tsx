@@ -24,8 +24,8 @@ import { useNavigate } from "react-router-dom";
 // } from "../helpers/api-communicator";
 // import toast from "react-hot-toast";
 
-// const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
-  const Classroom = () => {
+const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
+  // const Classroom = () => {
     const auth = useAuth()
     const currentUser = auth.user
     const { id } = useParams()
@@ -86,7 +86,9 @@ import { useNavigate } from "react-router-dom";
       >
         {isMatch ? <ChatDrawer 
                   classroom={data} 
-                  currentUser={currentUser} 
+                  currentUser={currentUser}
+                  handleSetSocketMessage = {props.handleSetSocketMessage} 
+                  receivedMessage={props.receivedMessage} 
                   />
         
         : <Box
@@ -183,16 +185,16 @@ import { useNavigate } from "react-router-dom";
           <TeacherChat 
           classroom={data} 
           currentUser={currentUser} 
-          // handleSetSocketMessage = {props.handleSetSocketMessage} 
-          // receivedMessage={props.receivedMessage}
+          handleSetSocketMessage = {props.handleSetSocketMessage} 
+          receivedMessage={props.receivedMessage}
           />
         </Box>}
         <Box>
           <AiChat 
           classroom={data}
            currentUser={currentUser}
-          //  handleSetSocketMessage = {props.handleSetSocketMessage} 
-          //  receivedMessage={props.receivedMessage}
+           handleSetSocketMessage = {props.handleSetSocketMessage} 
+           receivedMessage={props.receivedMessage}
             />
         </Box>
         </Box>

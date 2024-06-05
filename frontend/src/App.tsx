@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -19,11 +19,55 @@ import TeacherCodeForm from "./pages/TeacherCodeForm";
 import SubjectUpdate from "./pages/SubjectUpdate";
 import UserDrawer from "./components/drawer/UserDrawer";
 import { Box } from "@mui/material";
+import { Socket, io }from 'socket.io-client';
+import { ServerToClientEvents, ClientToServerEvents } from "../../typing"
+
+// const socket: Socket<ServerToClientEvents, ClientToServerEvents > = io("https://ardent-particle-382720.uc.r.appspot.com:80");
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("http://localhost:4000", {
+  transports: ["websocket", "polling"], // Ensure the correct transport methods
+  reconnectionAttempts: 5, // Try to reconnect 5 times
+});
+
+socket.on("connect", () => {
+  console.log(`Connected to server with socket ID: ${socket.id}`);
+});
+
+socket.on("disconnect", () => {
+  console.log("Disconnected from server");
+});
 
 function App() {
   const auth = useAuth();
   const location = useLocation();
   const [isCodeValid, setIsCodeValid] = useState(false);
+  const [socketMessage, setSocketMessage] = useState(null)
+  const [receivedMessage, setReceivedMessage] = useState(null);
+
+    // Send Message to socket server
+    useEffect(() => {
+      if (socketMessage!==null) {
+        console.log("Sending message:", socketMessage);
+        socket.emit("clientMessage", socketMessage );
+      }
+    }, [socketMessage]);
+  
+    // Get the message from socket server
+    useEffect(() => {
+      socket.on("serverMessage", (data) => {
+        console.log("Received message:", data);
+        handleSetReceivedMessage(data);
+      }
+      );
+    }, []);
+
+    const handleSetSocketMessage = (data) => {
+      setSocketMessage(data)
+    }
+  
+    const handleSetReceivedMessage = (data) =>
+      setReceivedMessage(data)
+  
 
   const handleValidCode = () => {
     setIsCodeValid(true);
@@ -77,8 +121,8 @@ function App() {
               path="/classroom/:id"
               element={
                 <Classroom
-                // handleSetSocketMessage = {handleSetSocketMessage}
-                // receivedMessage = {receivedMessage}
+                handleSetSocketMessage = {handleSetSocketMessage}
+                receivedMessage = {receivedMessage}
                 />
               }
             />
