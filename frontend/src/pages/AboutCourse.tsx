@@ -48,6 +48,7 @@ const AboutCourse = () => {
       const data = await sendCreateClassroomRequest(req)
       await sendInitialChatRequest(data, req.senderId)
       toast.dismiss()
+      navigate(`/classroom/${data.id}`)
 
     } catch {
       console.log("cannot create classroom")
@@ -65,27 +66,29 @@ const AboutCourse = () => {
         width={"100%"}
         display={"flex"}
         flexDirection={"column"}
+        alignItems={"center"}
+        justifyContent={"center"}
      >
-        <Box width={"100%"} display="flex" flex={1}>
+        <Box width={"100%"} display="flex" flex={1} justifyContent={"center"} alignItems={"center"}>
             <Box 
-                padding={8} 
-                mt={8} 
+                padding={3} 
+                mt={3} 
                 display={{ md: "flex", sm: "none", xs: "none" }}
                 width={'50%'}
                 >
-                <img src={subject.imageUrl} alt="subject.imageUrl" style = {{maxWidth: "100%", maxHeight: "100%", borderRadius: "10px"}} />
+                <img src={subject.imageUrl} alt="subject.imageUrl" style = {{maxWidth: "100%", maxHeight: "100%", borderRadius: "10px", objectFit:"cover"}} />
             </Box>
             <Box
-            padding={8} 
-            mt={8} 
-            width={'50%'}
+            padding={3} 
+            mt={3} 
+            width={{sm:'100%'}}
             display={'flex'}
             flexDirection={'column'}
             justifyContent={"center"}
             alignItems={'center'}
             gap={"20px"}
             >
-                <Typography variant="h1">
+                <Typography align="center" variant="h1">
                     {subject.name}
                 </Typography>
                 <Typography variant="h5">
@@ -95,7 +98,8 @@ const AboutCourse = () => {
                 sx={{
                     display:'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    gap:"20px"
                 }}
                 >
                     <Avatar
@@ -107,7 +111,7 @@ const AboutCourse = () => {
                         {teacher.firstname} {teacher.lastname}
                  </Typography>
                 </Box>
-                <Button size="small" variant="outlined"
+                <Button size="medium" variant="contained" color="secondary"
                         onClick={handleEnroll}
                      >
                         Enroll
@@ -115,7 +119,7 @@ const AboutCourse = () => {
             </Box>
       </Box>
       <Box
-        padding={8} 
+        padding={3} 
         display={'flex'}
         flexDirection={'column'}
         // justifyContent={"center"}

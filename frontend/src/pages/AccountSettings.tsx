@@ -18,9 +18,6 @@ const AccountSettings = () => {
     }
   }, [auth, navigate]);
 
-  
-
-
 
   return (
     <div>
@@ -29,6 +26,8 @@ const AccountSettings = () => {
         flex={{ xs: 1, md: 0.5 }}
         justifyContent={"center"}
         alignItems={"center"}
+        flexWrap={"wrap"}
+        gap={"25px"}
         padding={2}
         ml={"auto"}
         mt={16}

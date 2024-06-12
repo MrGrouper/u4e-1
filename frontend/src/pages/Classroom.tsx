@@ -5,7 +5,7 @@ import { Box, Avatar, Typography, Button, IconButton, useMediaQuery, useTheme } 
 // import { useAuth } from "../context/AuthContext";
 import { getClassroomById, getSubject } from "../helpers/api-communicator";
 import { useParams } from "react-router-dom";
-import TeacherChat from "../components/chat/TeacherChat";
+// import TeacherChat from "../components/chat/TeacherChat";
 import AiChat from "../components/chat/AiChat";
 import ChatDrawer from "../components/drawer/ChatDrawer";
 import { useAuth } from "../context/AuthContext";
@@ -24,8 +24,8 @@ import { useNavigate } from "react-router-dom";
 // } from "../helpers/api-communicator";
 // import toast from "react-hot-toast";
 
-const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
-  // const Classroom = () => {
+// const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
+  const Classroom = () => {
     const auth = useAuth()
     const currentUser = auth.user
     const { id } = useParams()
@@ -65,30 +65,32 @@ const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
 }, []);
 
 
-  const theme = useTheme();
-  const isMatch = useMediaQuery(theme.breakpoints.down("lg"))
+  // const theme = useTheme();
+  // const isMatch = useMediaQuery(theme.breakpoints.down("lg"))
 
   if (subject){
   return (
     <>
-      <Box
+      {/* <Box
       sx= {{
         display: "flex",
         flexDirection: {md: 'row', xs: 'column-reverse', sm: 'column-reverse'},
         marginTop: '65px',
         height: '100vh-65px',
+        // overflow:"hidden", 
+        // overflowY:"scroll",
         alignItems: 'center',
         gap: '20px',
         padding: '20px',
         backgroundColor: 'transparent'
 
       }}
-      >
-        {isMatch ? <ChatDrawer 
+      > */}
+        {/* {isMatch ? <ChatDrawer 
                   classroom={data} 
                   currentUser={currentUser}
-                  handleSetSocketMessage = {props.handleSetSocketMessage} 
-                  receivedMessage={props.receivedMessage} 
+                  // handleSetSocketMessage = {props.handleSetSocketMessage} 
+                  // receivedMessage={props.receivedMessage} 
                   />
         
         : <Box
@@ -112,30 +114,22 @@ const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
             }}
           >
             <Typography
-              variant="h1"
-              sx={{
-                fontSize: "30px",
-                color: "#fffffe",
-                fontWeight: "bold"
-              }}
+              variant="h4"
+              color="primary"
             >
               Hi {currentUser.firstname}!
             </Typography>
             <Typography
-              variant="h3"
-              sx={{
-                fontSize: "20px",
-                color: "#e8e4e6",
-              }}
+              variant="h6"
+              color="primary"
+
             >
               Welcome to {subject.name}.
             </Typography>
             <Typography
-              variant="h3"
-              sx={{
-                fontSize: "20px",
-                color: "#e8e4e6",
-              }}
+              variant="h6"
+              color="primary"
+
             >
               Chat with your instructor below and your AI teacher in the bigger
               box
@@ -152,30 +146,20 @@ const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
             }}
           >
             <Typography
-              variant="h1"
-              sx={{
-                fontSize: "30px",
-                color: "#fffffe",
-                fontWeight: "bold"
-              }}
+              variant="h4"
+              color="primary"
             >
               Hi {currentUser.firstname}!
             </Typography>
             <Typography
-              variant="h3"
-              sx={{
-                fontSize: "20px",
-                color: "#e8e4e6",
-              }}
+              variant="h6"
+              color="primary"
             >
               You are instructing {subject.name}.
             </Typography>
             <Typography
-              variant="h3"
-              sx={{
-                fontSize: "20px",
-                color: "#e8e4e6",
-              }}
+              variant="h6"
+              color="primary"
             >
               Chat with your student below and give the AI teacher instructions in the bigger
               box
@@ -185,19 +169,32 @@ const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
           <TeacherChat 
           classroom={data} 
           currentUser={currentUser} 
-          handleSetSocketMessage = {props.handleSetSocketMessage} 
-          receivedMessage={props.receivedMessage}
+          // handleSetSocketMessage = {props.handleSetSocketMessage} 
+          // receivedMessage={props.receivedMessage}
           />
-        </Box>}
-        <Box>
+        </Box>} */}
+        <Box sx={{
+          height: "100%",  
+          display:"flex", 
+          alignItems:"center",
+
+          flexDirection: "column-reverse"
+          }}>
+          <ChatDrawer 
+                  classroom={data} 
+                  currentUser={currentUser}
+                  // handleSetSocketMessage = {props.handleSetSocketMessage} 
+                  // receivedMessage={props.receivedMessage} 
+                  />
           <AiChat 
           classroom={data}
            currentUser={currentUser}
-           handleSetSocketMessage = {props.handleSetSocketMessage} 
-           receivedMessage={props.receivedMessage}
+          //  handleSetSocketMessage = {props.handleSetSocketMessage} 
+          //  receivedMessage={props.receivedMessage}
             />
-        </Box>
-        </Box>
+            </Box>
+
+        {/* </Box> */}
     </>
   );
 }

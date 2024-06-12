@@ -5,7 +5,11 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\" ",
+    "dev": "concurrently \"npm run watch-ts\" \"npm run watch-frontend\" \"npm run nodemon\"",
+    "watch-ts": "tsc --watch",
+    "nodemon": "nodemon -q dist/index.js",
+    "watch-frontend": "chokidar '../frontend/src/**/*' -c \"npm run build-frontend\"",
+    "build-frontend": "cd ../frontend && npm run build",
     "build": "tsc",
     "start": "node dist/index.js"
   },
@@ -13,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/secret-manager": "^5.6.0",
     "@google-cloud/storage": "^7.11.0",
     "bcrypt": "^5.1.0",
     "concurrently": "^8.2.0",
@@ -21,6 +26,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.2",
     "multer": "^1.4.5-lts.1",
@@ -38,6 +44,7 @@
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.4.8",
+    "chokidar-cli": "^3.0.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",

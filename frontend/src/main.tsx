@@ -10,21 +10,50 @@ import { Toaster } from "react-hot-toast";
 axios.defaults.baseURL = "/api/v1";
 axios.defaults.withCredentials = true;
 
+const labelFontSize = ".75em";
 const theme = createTheme({
   typography: {
-    fontFamily: "Reddit Mono,monospace"
+    button: {
+      textTransform: 'none'
+    }
   },
   palette: {
     primary: {
-      main: '#e8e4e6',
-      light: '#fffffe;',
-      dark: '#004643',
-      contrastText: '#001e1d'
+      main: '#3c4043',
+      light: '#DCDCDC'
     },
     secondary: {
-      main: '#abd1c6',
-      light: '#fffffe;',
-      contrastText: '#f9bc60'
+      main: '#118ab2'
+    },
+    error: {
+      main: '#ef476f'
+    },
+    warning: {
+      main:"#ffd166"
+    },
+    info: {
+      main:"#073b4c"
+    },
+    success: {
+      main:"#06d6a0"
+    },
+  },
+  components: {
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: labelFontSize
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& > fieldset > legend": {
+            fontSize: `calc(0.75 * ${labelFontSize})`
+          }
+        }
+      }
     }
   }
 });

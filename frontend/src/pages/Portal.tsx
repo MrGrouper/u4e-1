@@ -5,7 +5,7 @@ import { getSubject, getUserClassrooms } from "../helpers/api-communicator";
 import { Box, Button } from "@mui/material";
 import ActiveClassCard from "../components/class/ActiveClassCard";
 import Typography from "@mui/material/Typography";
-import CourseCard from "../components/subject/CourseCard";
+import TeacherCard from "../components/subject/TeacherCard";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Portal = () => {
@@ -36,12 +36,13 @@ const Portal = () => {
   }, []);
 
   return (
-    <>
-      <div className="dashboard-container">
+
+    <Box component="div" sx={{display: "flex", flexDirection:"column", height: "calc(100vh - 110px)", overflow:"hidden", overflowY:"scroll", gap: "25px"}}>
+      <Box display={"flex"} flexDirection={"column"} >
       <Typography 
       variant="h4"
       sx={{
-        paddingBottom: '20px'
+        padding: '20px 20px 0px 20px'
       }}
       >Active Classes 
       </Typography>
@@ -65,8 +66,8 @@ const Portal = () => {
             })
           )}
         </Box>
-      </div>
-      <div className="dashboard-container">
+      </Box>
+      <Box display={"flex"} flexDirection={"column"} >
         <Box
         sx={{
           display:"flex",
@@ -107,18 +108,16 @@ const Portal = () => {
           ) : (
             subjects.map((subject) => {
               return (
-                <CourseCard
+                <TeacherCard
                   subject={subject}
-                  classroomId={null}
-                  isEnrolled={false}
-                  onEnroll={null}
                 />
               );
             })
           )}
         </Box>
-      </div>
-    </>
+      </Box>
+      </Box>
+
   );
 };
 

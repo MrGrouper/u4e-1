@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react";
-
-import {
-  Box,
-  Typography,
-  Button,
-  //   Avatar,
-  //   Badge,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Box, Typography, Button, IconButton, TextField } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuth } from "../../context/AuthContext";
@@ -42,7 +33,7 @@ const SubjectVideos = (props: { subject: Subject }) => {
         setVideoId(props.subject.videos);
       }
     }
-  }, []);
+  }, [auth, props.subject]);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -67,120 +58,109 @@ const SubjectVideos = (props: { subject: Subject }) => {
 
   const handleDelete = (index) => {
     //@ts-expect-error unused
-    setVideoId(videoId.filter((o,i) => i !== index));
-};
+    setVideoId(videoId.filter((o, i) => i !== index));
+  };
 
   return (
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
         flexDirection: "column",
         margin: "auto",
         padding: "30px",
-        boxShadow: "10px 10px 20px #000",
+        boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
         borderRadius: "10px",
-        border: "none",
-        width: "600px"
+        maxWidth: "100%",
+        width: "100%",
+        '@media (min-width: 600px)': {
+          maxWidth: "400px",
+        },
       }}
     >
-      <Typography variant="h4" textAlign={"center"}>Add Videos To Your Class</Typography>
-      <Typography>
+      <Typography paddingBottom={"5px"} variant="h5" textAlign={"center"}>
+        Add Youtube Videos To Your Class
+      </Typography>
+      <Typography variant="caption" textAlign={"center"} paddingBottom={"10px"}>
         The video ID will be located in the URL of the video page, right after
         the v= URL parameter. In this case, the URL of the video is:
         https://www.youtube.com/watch?v=aqz-KE-bpKQ. Therefore, the ID of the
-        video is aqz-KE-bpKQ{" "}
+        video is aqz-KE-bpKQ
       </Typography>
-      <form onSubmit={handleAdd}
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "start",
-        alignContent: "center",
-        gap: "10px"
-      }}
+      <form
+        onSubmit={handleAdd}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          width: "100%",
+        }}
       >
-        <TextField
-          onChange={(e) => setFormInput(e.target.value)}
-          margin="normal"
-          InputLabelProps={{ style: { color: "white" } }}
-          type="text"
-          name="youtubeUrl"
-          label="Paste your Youtube Video ID here"
-          value={formInput}
-          InputProps={{
-            style: {
-              width: "400px",
-              borderRadius: 10,
-              fontSize: 12,
-              color: "white",
-            },
-          }}
-        />
-        <IconButton aria-label="add" type="submit" >
-          <AddCircleIcon 
-          sx={{
-            color:"white"
-          }}
+        <Box sx={{ display: "flex", gap: "10px", width: "100%" }}>
+          <TextField
+            onChange={(e) => setFormInput(e.target.value)}
+            margin="normal"
+            fullWidth
+            name="youtubeUrl"
+            label="Paste your Youtube Video ID here"
+            type="text"
+            value={formInput}
+            InputProps={{
+              style: {
+                borderRadius: 10,
+              },
+            }}
           />
-        </IconButton>
+          <IconButton aria-label="add" type="submit">
+            <AddCircleIcon />
+          </IconButton>
+        </Box>
       </form>
       <Box
-      sx={{
-        padding: "5px",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignContent: "center",
-        gap: "10px",
-        flexWrap: "wrap",
-
-      }}
+        sx={{
+          padding: "5px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignContent: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
       >
         {videoId.map((videoId, index) => (
           <Box
-          sx={{
-            padding: "5px",
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
-            gap: "10px",
-            borderWidth: "1px",
-            borderColor: "white",
-            borderRadius: "5px",
-    
-          }}>
+            key={index}
+            sx={{
+              padding: "5px",
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              gap: "10px",
+              borderWidth: "1px",
+              borderColor: "white",
+              borderRadius: "5px",
+            }}
+          >
             <iframe
-              key={index}
               width="84"
               height="63"
               src={`https://www.youtube.com/embed/${videoId}`}
             ></iframe>
-            <IconButton aria-label="delete" key={index} onClick={() => handleDelete(index)}>
-              <DeleteIcon 
-                 sx={{
-                    color:"white"
-                  }}
-              />
+            <IconButton aria-label="delete" onClick={() => handleDelete(index)}>
+              <DeleteIcon />
             </IconButton>
           </Box>
         ))}
       </Box>
       <Button
         onClick={handleSubmit}
+        color="secondary"
+        variant="contained"
         sx={{
           px: 2,
           py: 1,
           mt: 2,
-          width: "400px",
+          width: "100%",
           borderRadius: 2,
-          bgcolor: "#e8e4e6",
-          color: "#001e1d",
-          ":hover": {
-            bgcolor: "white",
-            color: "black",
-          },
         }}
       >
         Update Videos

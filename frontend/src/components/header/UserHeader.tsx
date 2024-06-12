@@ -1,87 +1,84 @@
-import{ useState } from "react";
+import { useState } from "react";
 import {
-    AppBar,
-    Avatar,
-    Toolbar,
-    IconButton,
-    Menu,
-    MenuItem
-  } from "@mui/material";
-  import Logo from "../shared/Logo";
-  import { Link } from "react-router-dom";
-  import MenuIcon from '@mui/icons-material/Menu';
+  AppBar,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Box,
+} from "@mui/material";
+import Logo from "../shared/Logo";
+import { Link } from "react-router-dom";
+import UserDrawer from "../drawer/UserDrawer";
+import CustomAvatar from "../shared/CustomAvatar";
 
-  // import NavigationLink from "./shared/NavigationLink";
-  
-  const UserHeader = (props:{auth, handleDrawerToggle, drawerWidth}) => {
+const UserHeader = (props) => {
+  const { auth, handleDrawerToggle } = props;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  console.log(props.auth)
 
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-
-      const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-      };
-    
-      const handleClose = () => {
-        setAnchorEl(null);
-      };
-    return (
-        <AppBar
-          position= "fixed"
-          sx={{ bgcolor: "#001e1d", boxShadow: "none", height: "65px", width: { sm: `calc(100% - ${props.drawerWidth}px)` },
-          ml: { sm: `${props.drawerWidth}px` },}}
-        >
-        <Toolbar sx={{ display: "flex" }}>
-        <IconButton
-            aria-label="open drawer"
-            edge="start"
-            onClick={props.handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' }, color:"white" }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Logo />
-          <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <Avatar src={props.auth.user?.avatarUrl}/>
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem       
-                component={Link} 
-                to={`/account-settings`}
-                onClick={handleClose}
-                >Edit Profile
-                </MenuItem>
-                <MenuItem 
-                onClick={props.auth.logout}
-                component={Link} 
-                to={`/`}
-                >Logout</MenuItem>
-              </Menu>
-  
-        </Toolbar>
-      </AppBar>
-    );
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
-  
-  export default UserHeader;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <AppBar
+      position="fixed"
+      sx={{
+        bgcolor: "white",
+        boxShadow: "none",
+        height: "65px",
+        width: "100%",
+        borderBottom: ".0625rem solid #e0e0e0;",
+      }}
+    >
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            display: "flex",
+          }}
+        >
+          <UserDrawer handleDrawerToggle={handleDrawerToggle} />
+          <Logo />
+        </Box>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          onClick={handleMenu}
+        >
+          <CustomAvatar firstName={props.auth?.user?.firstname} lastName={props.auth?.user?.lastname}avatarUrl={auth?.user?.avatarUrl} size={40}/>
+        </IconButton>
+        <Menu
+          id="menu-appbar"
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem component={Link} to={`/account-settings`} onClick={handleClose}>
+            Edit Profile
+          </MenuItem>
+          <MenuItem onClick={auth.logout} component={Link} to={`/`}>
+            Log Out
+          </MenuItem>
+        </Menu>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default UserHeader;

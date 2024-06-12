@@ -7,7 +7,7 @@ const Logo = () => {
         display: "flex",
         marginRight: "auto",
         alignItems: "center",
-        gap: "15px",
+        gap: "2px",
       }}
     >
       <Link to={"/"}>
@@ -18,17 +18,16 @@ const Logo = () => {
           height={"30px"}
           className="image-inverted"
         />
-      </Link>{" "}
+      </Link>
       <Typography
+      color="info.main"
         sx={{
-          display: { md: "block", sm: "none", xs: "none" },
+          // display: { md: "block", sm: "none", xs: "none" },
           mr: "auto",
           fontWeight: "800",
-          textShadow: "2px 2px 20px #000",
-          color:"#e8e4e6"
         }}
       >
-        <span style={{ fontSize: "20px" }}>U4E</span>ducation
+        <span style={{ fontSize: "20px", color:"success.main" }}>U4E</span>ducation
       </Typography>
     </div>
   );

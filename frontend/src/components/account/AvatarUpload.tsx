@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 
-import { Box, Typography, Button, Avatar, Badge } from "@mui/material";
+import { Box, Typography, Button, Badge } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { uploadImage } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
+import CustomAvatar from "../shared/CustomAvatar";
 
 const AvatarUpload = () => {
   const auth = useAuth();
@@ -51,15 +52,6 @@ const AvatarUpload = () => {
 
   return (
 
-    //   <Box
-    //     display={"flex"}
-    //     flex={{ xs: 1, md: 0.5 }}
-    //     justifyContent={"center"}
-    //     alignItems={"center"}
-    //     padding={2}
-    //     ml={"auto"}
-    //     mt={16}
-    //   >
         <form
           onSubmit={handleSubmit}
           style={{
@@ -69,7 +61,7 @@ const AvatarUpload = () => {
             flexDirection: "column",
             margin: "auto",
             padding: "30px",
-            boxShadow: "10px 10px 20px #000",
+            boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
             borderRadius: "10px",
             border: "none",
           }}
@@ -81,11 +73,9 @@ const AvatarUpload = () => {
           alignItems={"center"}
           paddingBottom={'15px'}
           >
-          {currentUser && currentUser.avatarUrl  ? 
-          <Typography>Change Avatar</Typography> 
-          :
-          <Typography>Add Avatar</Typography>
-          }
+
+          <Typography variant="h5">Update profile avatar</Typography>
+  
         </Box>
         <Box
         display={"flex"}
@@ -93,8 +83,8 @@ const AvatarUpload = () => {
         alignItems={"center"}
         >
           <Badge 
-          badgeContent={'+'}
-          color="secondary"
+          badgeContent={"+"}
+          color="primary"
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',
@@ -102,8 +92,7 @@ const AvatarUpload = () => {
           onClick = {()=> fileInput.current.click()}
           sx={{
             "& .MuiBadge-badge": {
-              color: "#001e1d",
-              backgroundColor: "#fffffe",
+              color: "secondary",
               fontSize: '30px',
               fontWeight: '200',
               height: '30px',
@@ -116,13 +105,12 @@ const AvatarUpload = () => {
           }}
           overlap="circular"
         >
-          <Avatar
-          sx={{
-            height: '100px', 
-            width: '100px',
-          }}
-          src = {url}
-          ></Avatar>
+          <CustomAvatar
+          size={100}
+          firstName={auth.user.firstname}
+          lastName={auth.user.lastname}
+          avatarUrl = {url}
+          ></CustomAvatar>
           </Badge>
         </Box>
        
@@ -138,21 +126,17 @@ const AvatarUpload = () => {
 
             <Button
               type="submit"
+              variant="contained"
+              color="secondary"
               sx={{
                 px: 2,
                 py: 1,
                 mt: 2,
                 width: "400px",
                 borderRadius: 2,
-                bgcolor: "#e8e4e6",
-                color: '#001e1d',
-                ":hover": {
-                  bgcolor: "white",
-                  color: "black",
-                },
               }}
             >
-              Use Image
+              Use avatar
             </Button>
           
         </form>

@@ -5,7 +5,7 @@ import {
 
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Links } from "./Links"
+import DrawerLinks from "./DrawerLinks";
 
 
 const DrawerComp = () => {
@@ -14,23 +14,22 @@ const DrawerComp = () => {
   return (
     <React.Fragment>
       <Drawer
-        anchor="right"
+        anchor="left"
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
         PaperProps={{
             sx:{
-                backgroundColor: "black",
-                mt: "20px"
+              width:"240px"
         }
         }}
       >
-        <Links />
+        <DrawerLinks />
       </Drawer>
       <IconButton
-        sx={{ color: "white", marginLeft: "auto" }}
+        sx={{ marginLeft: "auto" }}
         onClick={() => setOpenDrawer(!openDrawer)}
       >
-        <MenuIcon sx={{color:"#ffffff"}} />
+        <MenuIcon color="primary" />
       </IconButton>
     </React.Fragment>
   );

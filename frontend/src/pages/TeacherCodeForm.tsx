@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Box, Typography, Button, TextField } from '@mui/material';
-import { toast } from 'react-hot-toast';
+import React, { useState } from "react";
+import { Box, Typography, Button, TextField } from "@mui/material";
+import { toast } from "react-hot-toast";
+import { IoIosLogIn } from "react-icons/io";
+import Logo from "../components/shared/Logo";
 
 type Props = {
   onValidCode: () => void;
@@ -23,56 +25,72 @@ const TeacherCodeForm = ({ onValidCode }: Props) => {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      padding={2}
-      mt={'64px'}
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      mt={{ xs: 4, sm: 8 }} // Responsive margin-top
+      width="100%" // Ensure full width for mobile responsiveness
+      height="100vh" // Full height for centering vertically
     >
-      <Typography variant="h4" textAlign="center" padding={2} fontWeight={600}>
-        Enter Teacher Code
-      </Typography>
-      <form onSubmit={handleSubmit} style={{ 
-            width: '100%', 
-            maxWidth: '400px',             
-            padding: "30px",
-            boxShadow: "10px 10px 20px #000",
-            borderRadius: "10px",
-            border: "none",}}>
-        <TextField
-          fullWidth
-          label="Teacher Code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          margin="normal"
-          InputLabelProps={{ style: { color: "white" } }}
-          InputProps={{
-            style: {
-              width: "400px",
-              borderRadius: 10,
-              fontSize: 12,
-              color: "white",
-            },
-          }}
-        />
-        <Button
-          type="submit"
-          fullWidth
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          margin: "auto",
+          padding: "30px",
+          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+          borderRadius: "10px",
+          border: "none",
+          width: "90%", // Adjust width for mobile responsiveness
+          maxWidth: "400px", // Maximum width for larger screens
+        }}
+      >
+        <Box
           sx={{
-            px: 2,
-            py: 1,
-            mt: 2,
-            borderRadius: 2,
-            bgcolor: "#00fffc",
-            ":hover": {
-              bgcolor: "white",
-              color: "black",
-            },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
-          Submit
-        </Button>
+          <Box display={"flex"} justifyContent={"center"}>
+            <Logo />
+          </Box>
+          <Typography
+            variant="h5"
+            color="primary"
+            textAlign="center"
+            padding={2}
+            fontWeight={400}
+          >
+            Enter Your Access Code
+          </Typography>
+          <TextField
+            fullWidth
+            label="Teacher Code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            margin="normal"
+            InputProps={{
+              style: {
+                borderRadius: 10,
+                color: "primary",
+              },
+            }}
+          />
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            sx={{
+              px: 2,
+              py: 1,
+              mt: 2,
+              borderRadius: 2,
+            }}
+            endIcon={<IoIosLogIn />}
+          >
+            Submit
+          </Button>
+        </Box>
       </form>
     </Box>
   );

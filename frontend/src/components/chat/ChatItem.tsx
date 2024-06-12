@@ -5,6 +5,7 @@ import { Box, Avatar, Typography } from '@mui/material';
 //@ts-expect-error fdas
 import { InlineMath, BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
+import CustomAvatar from '../shared/CustomAvatar';
 
 // Utility function to escape HTML entities for security
 const escapeHtml = (unsafe) => {
@@ -40,7 +41,7 @@ const parseMarkdown = (content) => {
   return <span dangerouslySetInnerHTML={renderedText} />;
 };
 
-const ChatItem = ({ content, role, avatarUrl }) => {
+const ChatItem = ({ content, role, currentUser }) => {
   // Additional parsing for LaTeX goes here if needed
 
   if (role === 'assistant'){
@@ -48,23 +49,30 @@ const ChatItem = ({ content, role, avatarUrl }) => {
     <Box
       sx={{
         display: 'flex',
-        p: 2,
-        bgcolor: 'transparent',
         gap: 2,
         borderRadius: 2,
+        maxWidth:"800px"
       }}
     >
 
       <Avatar 
       src = {window.location.origin + '/U4E-AI-Icon-cropped.png'}
       alt = 'teacher'
+      sx={{height:"24px", width:"24px"}}
       />
       
-      <Box>
-        <Typography component="div" sx={{ fontSize: '14px', color: 'white' }}>
-          {parseMarkdown(content)}
-        </Typography>
-      </Box>
+      <Box
+          sx={{
+            display:"flex",
+            flexDirection:"column"
+          
+          }}
+          >
+            <Typography variant='h6'>AI Teacher</Typography>
+            <Typography variant='body1'>
+              {parseMarkdown(content)}
+            </Typography>
+          </Box>
     </Box>
   );
     }
@@ -73,20 +81,28 @@ const ChatItem = ({ content, role, avatarUrl }) => {
         <Box
           sx={{
             display: 'flex',
-            p: 2,
-            bgcolor: '#001e1d',
             gap: 2,
             borderRadius: 2,
+            maxWidth:"800px"
           }}
         >
     
-          <Avatar 
-          sx={{ ml: '0', bgcolor:'black' }}
-          src = {avatarUrl}
+          <CustomAvatar 
+          firstName={currentUser.firstname}
+          lastName={currentUser.lastname}
+          avatarUrl = {currentUser.avatarUrl}
+          size={24}
           >
-          </Avatar>
-          <Box>
-            <Typography component="div" sx={{ fontSize: '14px', color: 'white' }}>
+          </CustomAvatar>
+          <Box
+          sx={{
+            display:"flex",
+            flexDirection:"column"
+          
+          }}
+          >
+            <Typography variant='h6'>{currentUser.firstname}</Typography>
+            <Typography variant='body1'>
               {parseMarkdown(content)}
             </Typography>
           </Box>

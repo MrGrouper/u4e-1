@@ -5,6 +5,7 @@ import CustomizedInput from "../components/shared/CustomizedInput";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Logo from "../components/shared/Logo";
 
 const TeacherSignup = () => {
   const navigate = useNavigate();
@@ -36,69 +37,64 @@ const TeacherSignup = () => {
   };
 
   return (
-    <Box width={"100%"} height={"100%"} display="flex" flex={1}>
-      <Box padding={8} mt={8} display={{ md: "flex", sm: "none", xs: "none" }}>
-        <img src="airobot.png" alt="Robot" style={{ width: "400px" }} />
-      </Box>
-      <Box
-        display={"flex"}
-        flex={{ xs: 1, md: 0.5 }}
-        justifyContent={"center"}
-        alignItems={"center"}
-        padding={2}
-        ml={"auto"}
-        mt={16}
+    <Box
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      mt={{ xs: 4, sm: 8 }} // Responsive margin-top
+      width="100%" // Ensure full width for mobile responsiveness
+      height="100vh" // Full height for centering vertically
+    >
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          margin: "auto",
+          padding: "30px",
+          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+          borderRadius: "10px",
+          border: "none",
+          width: "90%", // Adjust width for mobile responsiveness
+          maxWidth: "400px", // Maximum width for larger screens
+        }}
       >
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            margin: "auto",
-            padding: "30px",
-            boxShadow: "10px 10px 20px #000",
-            borderRadius: "10px",
-            border: "none",
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Typography
-              variant="h4"
-              textAlign="center"
-              padding={2}
-              fontWeight={600}
-            >
-              Signup
-            </Typography>
-            <CustomizedInput type="text" name="firstname" label="First name" />
-            <CustomizedInput type="text" name="lastname" label="Last name" />
-            <CustomizedInput type="email" name="email" label="Email" />
-            <CustomizedInput type="password" name="password" label="Password" />
-            <Button
-              type="submit"
-              sx={{
-                px: 2,
-                py: 1,
-                mt: 2,
-                width: "400px",
-                borderRadius: 2,
-                bgcolor: "#00fffc",
-                ":hover": {
-                  bgcolor: "white",
-                  color: "black",
-                },
-              }}
-              endIcon={<IoIosLogIn />}
-            >
-              Signup
-            </Button>
+          <Box display={"flex"} justifyContent={"center"}>
+            <Logo />
           </Box>
-        </form>
-      </Box>
+          <Typography
+            variant="h5"
+            textAlign="center"
+            padding={2}
+            fontWeight={400}
+          >
+            Sign Up As Teacher
+          </Typography>
+          <CustomizedInput type="text" name="firstname" label="First name" />
+          <CustomizedInput type="text" name="lastname" label="Last name" />
+          <CustomizedInput type="email" name="email" label="Email" />
+          <CustomizedInput type="password" name="password" label="Password" />
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            sx={{
+              px: 2,
+              py: 1,
+              mt: 2,
+              borderRadius: 2,
+            }}
+            endIcon={<IoIosLogIn />}
+          >
+            Signup
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 };

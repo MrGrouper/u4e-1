@@ -44,16 +44,18 @@ const UserInfo = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        margin: "auto",
-        padding: "30px",
-        boxShadow: "10px 10px 20px #000",
-        borderRadius: "10px",
-        border: "none",
-      }}
-    >
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          margin: "auto",
+          padding: "30px",
+          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+          borderRadius: "10px",
+          border: "none",
+          width: "90%", // Adjust width for mobile responsiveness
+          maxWidth: "400px", // Maximum width for larger screens
+        }}
+      >
       <Box
         sx={{
           display: "flex",
@@ -62,10 +64,8 @@ const UserInfo = () => {
         }}
       >
         <Typography
-          variant="h4"
+          variant="h5"
           textAlign="center"
-          padding={2}
-          fontWeight={600}
         >
           Edit User Info
         </Typography>
@@ -96,17 +96,13 @@ const UserInfo = () => {
 
         <Button
           type="submit"
+          variant="contained"
+          color="secondary"
           sx={{
             px: 2,
             py: 1,
             mt: 2,
-            width: "400px",
             borderRadius: 2,
-            bgcolor: "#00fffc",
-            ":hover": {
-              bgcolor: "white",
-              color: "black",
-            },
           }}
           endIcon={<IoIosLogIn />}
         >

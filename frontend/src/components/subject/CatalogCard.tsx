@@ -25,8 +25,8 @@ type Subject = {
   classrooms: Types.ObjectId[];
 };
 
-const CourseCard = (props: { subject: Subject, classroomId }) => {
-
+const CatalogCard = (props: { subject: Subject}) => {
+  // const auth = useAuth();
 
   const truncate = (str) => {
     return str.length > 110 ? str.substring(0, 107) + "..." : str;
@@ -69,6 +69,19 @@ const CourseCard = (props: { subject: Subject, classroomId }) => {
           {truncate(props.subject.courseDescription)}
         </Typography>
       </CardContent>
+      {/* {(auth?.isLoggedIn && auth.user) ? 
+        auth.user.isTeacher ? (
+          <CardActions color="#004643">
+            <Button 
+              component={Link} 
+              to={`/${props.subject.id}/update`}
+              size="small" 
+              variant="outlined" >
+              Edit Course
+            </Button>
+          </CardActions>
+        ) : (
+          props.isEnrolled ? (
             <CardActions color="#004643">
               <Button 
                 component={Link} 
@@ -79,8 +92,33 @@ const CourseCard = (props: { subject: Subject, classroomId }) => {
                 Go to Classroom
               </Button>
             </CardActions>
+          ) : (
+            <CardActions color="#004643">
+              <Button size="small" variant="outlined"
+                component={Link} 
+                to={`/course/${props.subject.id}`}
+              >
+                Learn More
+              </Button>
+              <Button size="small" variant="outlined"
+                onClick={handleEnroll}
+              >
+                Enroll
+              </Button>
+            </CardActions>
+          )
+        ) : ( */}
+        <CardActions color="#004643">
+        <Button size="small" variant="outlined"
+                component={Link} 
+                to={`/course/${props.subject.id}`}
+              >
+                Learn More
+              </Button>
+        </CardActions>
+      {/* )} */}
     </Card>
   );
 };
 
-export default CourseCard;
+export default CatalogCard;

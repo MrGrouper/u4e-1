@@ -69,7 +69,7 @@ const CreateSubject = () => {
         flexDirection: "column",
         margin: "auto",
         padding: "30px",
-        boxShadow: "10px 10px 20px #000",
+        boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
         borderRadius: "10px",
         border: "none",
       }}
@@ -81,13 +81,12 @@ const CreateSubject = () => {
       
       }}
       >
-      <Typography variant="h3">Add New Course</Typography>
+      <Typography variant="h4">Add New Course</Typography>
       </Box>
       <CustomizedInput type="text" name="subjectname" label="Course Name" />
 
       <TextField
       margin="normal"
-      InputLabelProps={{ style: { color: "white" } }}
       name="courseDescription"
       label="Course Description"
       type="text"
@@ -95,10 +94,8 @@ const CreateSubject = () => {
       rows={5}
       InputProps={{
         style: {
-          width: "400px",
           borderRadius: 10,
-          fontSize: 12,
-          color: "white",
+          color: "primary",
         },
       }}
     />
@@ -110,7 +107,7 @@ const CreateSubject = () => {
       padding: "16px"
 
     }}>
-    <Typography>Add Curriculum File</Typography>
+    <Typography variant="h5">Add Curriculum File</Typography>
       <input
         type="file"
         accept=".pdf, .doc, .docx"
@@ -121,21 +118,16 @@ const CreateSubject = () => {
 
       <Button
         type="submit"
+        variant="contained"
+        color="secondary"
         sx={{
           px: 2,
           py: 1,
           mt: 2,
-          width: "400px",
           borderRadius: 2,
-          bgcolor: "#e8e4e6",
-          color: "#001e1d",
-          ":hover": {
-            bgcolor: "white",
-            color: "black",
-          },
         }}
       >
-        Create Class
+        Create Course
       </Button>
     </form>
 

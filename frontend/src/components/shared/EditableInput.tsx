@@ -20,13 +20,14 @@ const EditableInput = (props: Props) => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         alignItems: "center",
+        width:"100%",
       }}
     >
       <TextField
         margin="normal"
-        InputLabelProps={{ style: { color: "white" } }}
+        fullWidth
         name={props.name}
         label={props.label}
         type={props.type}
@@ -37,10 +38,8 @@ const EditableInput = (props: Props) => {
         rows = {props.rows}
         InputProps={{
           style: {
-            width: "400px",
             borderRadius: 10,
-            fontSize: 12,
-            color: "white",
+            color: "primary",
           },
         }}
       />
@@ -51,12 +50,12 @@ const EditableInput = (props: Props) => {
         {!disableButton ? (
           <CheckIcon
             fontSize="inherit"
-            sx={{ color: "white" }}
+            color='primary'
           />
         ) : (
           <EditIcon
             fontSize="inherit"
-            sx={{ color: "white" }}
+            color='primary'
           />
         )}
       </IconButton>

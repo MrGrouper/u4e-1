@@ -1,70 +1,39 @@
-// import React from 'react'
-import NavigationLink from '../shared/NavigationLink'
-import { useAuth } from '../../context/AuthContext'
-
+import { Box, Button} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export const Links = () => {
-    const auth = useAuth();
+  const navigate = useNavigate()
   return (
-    <>
-          {auth?.isLoggedIn ? (
-            <>
-                <NavigationLink
-                bg="transparent"
-                to="/"
-                text="Contribute"
-                textColor="white"
-              />
-              {auth.user.isTeacher ? 
-              <NavigationLink
-              bg="transparent"
-              to="/portal"
-              text="Go To Portal"
-              textColor="white"
-            />
-            :
-              <NavigationLink
-                bg="transparent"
-                to="/dashboard"
-                text="Go To Dashboard"
-                textColor="white"
-              /> }             
-              <NavigationLink
-              bg="transparent"
-              to="/account-settings"
-              text="Account"
-              textColor="white"
-            />
-              <NavigationLink
-                bg="transparent"
-                textColor="white"
-                to="/"
-                text="logout"
-                onClick={auth.logout}
-              />
-            </>
-          ) : (
-            <>
-                <NavigationLink
-                bg="transparent"
-                to="/"
-                text="Contribute"
-                textColor="white"
-              />
-              <NavigationLink
-                bg="transparent"
-                to="/login"
-                text="Login"
-                textColor="white"
-              />
-              <NavigationLink
-                bg="transparent"
-                textColor="white"
-                to="/signup"
-                text="Signup"
-              />
-            </>
-          )}
-        </>
+    <Box
+    sx={{display: "flex", flexWrap:"nowrap", justifyContent:"flex-start", gap:"25px"}}
+    >
+      <Button 
+        onClick={()=>navigate('/catalog')}
+        size='medium'
+        sx={{
+        borderRadius:"20px",
+        }}
+        >
+            Course Catalog
+    </Button>
+    <Button 
+        onClick={()=>navigate('/')}
+        size='medium'
+        sx={{
+        borderRadius:"20px",
+        }}
+        >
+            About
+    </Button>
+    <Button 
+        onClick={()=>navigate('/')}
+        size='medium'
+        sx={{
+        borderRadius:"20px",
+        }}
+        >
+            Contribute
+    </Button>
+        </Box>
   )
 }
