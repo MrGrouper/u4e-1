@@ -78,7 +78,7 @@ function App() {
   };
 
   // List of paths where the header should be displayed
-  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/onboard", "/course/:id", "/catalog"];
+  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/onboard", "/course/:id", "/ctalog"];
 
 
 

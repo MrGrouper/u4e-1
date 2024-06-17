@@ -25,7 +25,6 @@ const SubjectOnboard = () => {
 
 
   return (
-    <div>
       <Box
         display={"flex"}
         flex={{ xs: 1, md: 0.5 }}
@@ -34,6 +33,8 @@ const SubjectOnboard = () => {
         padding={2}
         ml={"auto"}
         mt={16}
+        gap={"25px"}
+        flexWrap={"wrap"}
       >
         <SubjectImage
         subject = {data}
@@ -43,7 +44,7 @@ const SubjectOnboard = () => {
         />
          
       </Box>
-    </div>
+
   );
 };
 

@@ -88,10 +88,10 @@ export const sendCreateClassroomRequest = async (req: object) => {
   return data;
 };
 
-export const sendInitialChatRequest = async (classroom: object, senderId: any) => {
-  const req = {...classroom, senderId: senderId}
-  console.log("req", req)
-  const res = await axios.post("/message/initialize", req )
+export const sendInitialChatRequest = async (req:{classroom: object, senderId: any}) => {
+  const reqUpdated = {...req.classroom, senderId: req.senderId}
+  console.log("req", reqUpdated)
+  const res = await axios.post("/message/initialize", reqUpdated )
   if (res.status !== 200){
     throw new Error("Unable to create classroom");
   }
@@ -277,6 +277,18 @@ export const getSubject = async ( id: string | Types.ObjectId | undefined) => {
   
   return data;
   };
+
+  export const getSubjectWithClassrooms = async ( id: string | Types.ObjectId | undefined) => {
+
+    const res = await axios.get(`/subject/classrooms/${id}`);
+    if (res.status !== 200) {
+      throw new Error("Unable to get subject");
+    }
+    
+    const data = await res.data;
+    
+    return data;
+    };
 
   export const getAllSubjects = async () => {
 

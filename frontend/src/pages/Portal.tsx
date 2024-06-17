@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { getSubject, getUserClassrooms } from "../helpers/api-communicator";
+import { getSubject, getSubjectWithClassrooms, getUserClassrooms } from "../helpers/api-communicator";
 import { Box, Button } from "@mui/material";
 import ActiveClassCard from "../components/class/ActiveClassCard";
 import Typography from "@mui/material/Typography";
 import TeacherCard from "../components/subject/TeacherCard";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useQueries } from "@tanstack/react-query";
 
 const Portal = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+
+  const subjectQueries = useQueries({
+    queries: auth.user.subjects.map((subject)=> {
+      return {
+        queryKey: ['subject', subject],
+        queryFn: () => getSubjectWithClassrooms(subject)
+      }
+    }
+    )
+  })
+
+  console.log('subjectQueries', subjectQueries)
 
   const [classrooms, setClassrooms] = useState([]);
   const [subjects, setSubjects] = useState([]);

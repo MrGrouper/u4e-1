@@ -52,6 +52,24 @@ export const findSubject = async (
   }
 };
 
+export const findSubjectWithClassrooms = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {id} = req.params
+  console.log('id', req)
+  try {
+    const subject = await Subject.findById(id).populate("classrooms")
+    console.log('subject', subject)
+    if (subject){ 
+      res.status(200).json(subject)
+    }
+  } catch (error) {
+    res.status(500).json(error)
+  }
+};
+
 export const findAllSubjects = async (
   req: Request,
   res: Response,
@@ -64,6 +82,7 @@ export const findAllSubjects = async (
     res.status(500).json(error)
   }
 };
+
 
 export const subjectUpdate = async (
   req: Request,
