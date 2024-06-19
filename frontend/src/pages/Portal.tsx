@@ -1,64 +1,70 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { getSubject, getSubjectWithClassrooms, getUserClassrooms } from "../helpers/api-communicator";
+import { getSubjectWithClassrooms } from "../helpers/api-communicator";
 import { Box, Button } from "@mui/material";
 import ActiveClassCard from "../components/class/ActiveClassCard";
 import Typography from "@mui/material/Typography";
 import TeacherCard from "../components/subject/TeacherCard";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useQueries } from "@tanstack/react-query";
+import ErrorWithPage from "../components/shared/ErrorWithPage";
+import LoadingPage from "../components/shared/LoadingPage";
 
 const Portal = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  const subjectArr = auth.user.subjects;
+
   const subjectQueries = useQueries({
-    queries: auth.user.subjects.map((subject)=> {
+    queries: subjectArr.map((subjectId) => {
       return {
-        queryKey: ['subject', subject],
-        queryFn: () => getSubjectWithClassrooms(subject)
-      }
+        queryKey: ["subject", subjectId],
+        queryFn: () => getSubjectWithClassrooms(subjectId),
+      };
+    }),
+  });
+
+  const isLoading = subjectQueries.some((query) => query.isLoading);
+  const isError = subjectQueries.some((query) => query.isError);
+
+  const classrooms = [];
+  const subjects = subjectQueries.map((query) => {
+    if (query.data) {
+      query.data.classrooms.forEach((classroom) => classrooms.push(classroom));
     }
-    )
-  })
+    return query.data;
+  });
 
-  console.log('subjectQueries', subjectQueries)
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
-  const [classrooms, setClassrooms] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      const data = await Promise.all(
-        auth.user.subjects.map(async (subjectId) => {
-          const subject = await getSubject(subjectId);
-          return subject;
-        })
-      );
-      setSubjects(data);
-    };
-
-    if (auth?.isLoggedIn && auth.user) {
-      getUserClassrooms(auth.user._id).then((data) => {
-        setClassrooms(data);
-      });
-
-      fetchSubjects();
-    }
-  }, []);
+  if (isError) {
+    return <ErrorWithPage />;
+  }
 
   return (
-
-    <Box component="div" sx={{display: "flex", flexDirection:"column", height: "calc(100vh - 110px)", overflow:"hidden", overflowY:"scroll", gap: "25px"}}>
-      <Box display={"flex"} flexDirection={"column"} >
-      <Typography 
-      variant="h4"
+    <Box
+      component="div"
       sx={{
-        padding: '20px 20px 0px 20px'
+        display: "flex",
+        flexDirection: "column",
+        height: "calc(100vh - 110px)",
+        overflow: "hidden",
+        overflowY: "scroll",
+        gap: "25px",
       }}
-      >Active Classes 
-      </Typography>
+    >
+      <Box display={"flex"} flexDirection={"column"}>
+        <Typography
+          variant="h4"
+          sx={{
+            padding: "20px 20px 0px 20px",
+          }}
+        >
+          Active Classes
+        </Typography>
         <Box
           sx={{
             display: "flex",
@@ -66,12 +72,13 @@ const Portal = () => {
             flexWrap: "wrap",
           }}
         >
-          {classrooms.length == 0 ? (
+          {classrooms?.length == 0 ? (
             <Typography variant="h6">No Active Classes</Typography>
           ) : (
-            classrooms.map((classroom) => {
+            classrooms?.map((classroom) => {
               return (
                 <ActiveClassCard
+                  key={classroom.id}
                   teacherId={auth.user._id}
                   classroom={classroom}
                 />
@@ -80,32 +87,32 @@ const Portal = () => {
           )}
         </Box>
       </Box>
-      <Box display={"flex"} flexDirection={"column"} >
+      <Box display={"flex"} flexDirection={"column"}>
         <Box
-        sx={{
-          display:"flex",
-          alignItems:"center",
-          justifyContent: 'flex-start',
-          gap:"15px",
-          paddingBottom: '20px'
-        }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            gap: "15px",
+            paddingBottom: "20px",
+          }}
         >
-        <Typography variant="h4">Your Offered Courses</Typography>
-        <Button                 
-          size="small" 
-          variant="outlined"
-          onClick={()=>navigate('/addsubject')}
+          <Typography variant="h4">Your Offered Courses</Typography>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => navigate("/addsubject")}
           >
             <Box
-                    sx={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent: 'flex-start',
-                      gap:"5px"
-                    }}
-                    >
-            <AddCircleOutlineIcon />
-             Add New Course
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: "5px",
+              }}
+            >
+              <AddCircleOutlineIcon />
+              Add New Course
             </Box>
           </Button>
         </Box>
@@ -116,21 +123,17 @@ const Portal = () => {
             flexWrap: "wrap",
           }}
         >
-          {subjects.length == 0 ? (
+          {subjects?.length === 0 ? (
             <Typography variant="h5">No Active Courses</Typography>
           ) : (
-            subjects.map((subject) => {
-              return (
-                <TeacherCard
-                  subject={subject}
-                />
-              );
+            subjects?.map((subject) => {
+              console.log(subject);
+              return <TeacherCard key={subject.id} subject={subject} />;
             })
           )}
         </Box>
       </Box>
-      </Box>
-
+    </Box>
   );
 };
 

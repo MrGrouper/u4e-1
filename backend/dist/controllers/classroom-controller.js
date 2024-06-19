@@ -2,7 +2,7 @@ import Classroom from "../models/Classroom.js";
 import { openai } from "../config/openai-config.js";
 import Subject from "../models/Subject.js";
 export const createClassroom = async (req, res, next) => {
-    const { subjectId, senderId, receiverId } = req.body;
+    const { subjectId, studentId, teacherId } = req.body;
     console.log('req.body', req.body);
     const subject = await Subject.findById(subjectId);
     console.log('subject log', subject);
@@ -15,7 +15,8 @@ export const createClassroom = async (req, res, next) => {
         ],
     });
     const newClassroom = new Classroom({
-        members: [senderId, receiverId],
+        studentId: studentId,
+        teacherId: teacherId,
         subjectId: subjectId,
         threadId: thread.id,
         messages: [],
@@ -30,22 +31,24 @@ export const createClassroom = async (req, res, next) => {
         res.status(500).json(error);
     }
 };
-export const userClassrooms = async (req, res, next) => {
+export const studentClassrooms = async (req, res, next) => {
     try {
+        const { userId } = req.params;
         const classroom = await Classroom.find({
-            members: { $in: [req.params.userId] },
-        });
+            studentId: userId
+        }).populate("subjectId");
         res.status(200).json(classroom);
     }
     catch (error) {
         res.status(500).json(error);
     }
 };
-export const findClassroom = async (req, res, next) => {
+export const teacherClassrooms = async (req, res, next) => {
     try {
-        const classroom = await Classroom.findOne({
-            members: { $all: [req.params.firstId, req.params.secondId] },
-        });
+        const { userId } = req.params;
+        const classroom = await Classroom.find({
+            teacherId: userId
+        }).populate("subjectId");
         res.status(200).json(classroom);
     }
     catch (error) {

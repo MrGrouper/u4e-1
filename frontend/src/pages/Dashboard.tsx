@@ -1,36 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { getUserClassrooms, getAllSubjects } from "../helpers/api-communicator";
+import { getStudentClassrooms } from "../helpers/api-communicator";
 // import Class from "../components/Class";
 //@ts-expect-error jdslajf
 import { toast } from "react-hot-toast";
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import CourseCard from "../components/subject/CourseCard";
+import LoadingPage from "../components/shared/LoadingPage";
+import ErrorWithPage from "../components/shared/ErrorWithPage";
+import { useQuery } from "@tanstack/react-query"
 
 const Dashboard = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-
-  const [classrooms, setClassrooms] = useState([]);
-  const [availableSubjects, setAvailableSubjects] = useState([]);
-  // const [enrolledSubjects, setEnrolledSubjects] = useState([]);
-
-  useEffect(() => {
-    if (auth?.isLoggedIn && auth.user) {
-      getUserClassrooms(auth.user._id).then((data) => {
-        setClassrooms(data);
-      });
-    }
-  }, [auth?.isLoggedIn, auth.user]);
-
-  useEffect(() => {
-    if (auth?.isLoggedIn && auth.user) {
-      getAllSubjects().then((data) => {
-        setAvailableSubjects(data);
-      });
-    }
-  }, [auth?.isLoggedIn, auth.user]);
+  const userId = auth.user._id
 
   useEffect(() => {
     if (!auth?.user) {
@@ -38,17 +22,19 @@ const Dashboard = () => {
     }
   }, [auth, navigate]);
 
-  // const handleEnroll = (subject) => {
-  //   setEnrolledSubjects([...enrolledSubjects, subject]);
-  //   getUserClassrooms(auth.user._id).then((data) => {
-  //     setClassrooms(data);
-  //   });
-  // };
+  const { isPending, isError, data: classrooms, error } = useQuery({
+    queryKey :["classrooms", userId], 
+    queryFn: () => getStudentClassrooms(userId)})
 
-  const subjectMap = availableSubjects.reduce((map, subject) => {
-    map[subject.id] = subject;
-    return map;
-  }, {});
+
+  if (isPending) {
+    return <LoadingPage/>
+  }
+
+  if (isError) {
+    console.log(error)
+    return <ErrorWithPage/>
+  }
 
   return (
     <>
@@ -81,8 +67,8 @@ const Dashboard = () => {
             paddingBottom: "25px",
           }}
         >
-          {classrooms.map((classroom) => {
-            const subject = subjectMap[classroom.subjectId];
+          {classrooms?.map((classroom) => {
+            const subject = classroom.subjectId
             return subject ? (
               <CourseCard subject={subject} classroomId={classroom.id} />
             ) : null;

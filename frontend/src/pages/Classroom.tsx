@@ -1,21 +1,22 @@
 // import  { useEffect, useRef, useState } from "react";
-//@ts-expect-error not used
-import { Box, Avatar, Typography, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
-// import red from "@mui/material/colors/red";
-// import { useAuth } from "../context/AuthContext";
-import { getClassroomById, getSubject } from "../helpers/api-communicator";
+
+import { Box } from "@mui/material";
+import { getClassroomById, getUser } from "../helpers/api-communicator";
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom";
 // import TeacherChat from "../components/chat/TeacherChat";
 import AiChat from "../components/chat/AiChat";
 import ChatDrawer from "../components/drawer/ChatDrawer";
 import { useAuth } from "../context/AuthContext";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 // import {Socket, io} from "socket.io-client";
 // import AiChat from "../components/chat/aiChat";
 
 // import ChatItem from "../components/chat/ChatItem";
 // import { IoMdSend } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import LoadingPage from "../components/shared/LoadingPage";
+import ErrorWithPage from "../components/shared/ErrorWithPage";
 // import {
 //   deleteUserChats,
 //   getUserChats,
@@ -31,148 +32,44 @@ import { useNavigate } from "react-router-dom";
     const { id } = useParams()
     const navigate = useNavigate()
 
-    console.log('id', id)
-
   // const location = useLocation();
   // const { data, currentUser } = location.state;
 
-  const [data, setData] = useState(null)
-  const [subject, setSubject] = useState(null)
+  // const [data, setData] = useState(null)
+  // const [subject, setSubject] = useState(null)
 
   useEffect(() => {
     if (!auth?.user) {
       return navigate("/login");
     }
   }, [auth, navigate]);
+  
+  const { data: classroom } = useQuery({
+    queryKey :["classroom", id], 
+    queryFn: () => getClassroomById(id)})
 
-  useEffect(() => {
 
-    const handleData = async () => {
-      try {
-      const classroom = await getClassroomById(id)
-      const subject = await getSubject(classroom.subjectId)
-      console.log([classroom, subject])
-      setData(classroom)
-      setSubject(subject)
+    const otherUserId = currentUser._id === classroom?.studentId ? classroom?.teacherId : classroom?.studentId
+    
+    const { isPending, isError, error, data: otherUser } = useQuery({
+      queryKey: ["user", otherUserId],
+      queryFn: () => getUser(otherUserId),
+      enabled: !!otherUserId
+    });
+
+    if (isPending) {
+      return <LoadingPage/>
     }
-      catch (error) {
-        console.log(error)
-    }}
-    if (auth?.isLoggedIn && auth.user){
-      handleData()
+  
+    if (isError) {
+      console.log(error)
+      return <ErrorWithPage/>
     }
 
-}, []);
 
 
-  // const theme = useTheme();
-  // const isMatch = useMediaQuery(theme.breakpoints.down("lg"))
-
-  if (subject){
   return (
-    <>
-      {/* <Box
-      sx= {{
-        display: "flex",
-        flexDirection: {md: 'row', xs: 'column-reverse', sm: 'column-reverse'},
-        marginTop: '65px',
-        height: '100vh-65px',
-        // overflow:"hidden", 
-        // overflowY:"scroll",
-        alignItems: 'center',
-        gap: '20px',
-        padding: '20px',
-        backgroundColor: 'transparent'
-
-      }}
-      > */}
-        {/* {isMatch ? <ChatDrawer 
-                  classroom={data} 
-                  currentUser={currentUser}
-                  // handleSetSocketMessage = {props.handleSetSocketMessage} 
-                  // receivedMessage={props.receivedMessage} 
-                  />
-        
-        : <Box
-          sx={{
-            // display: { md: "flex", xs: "none", sm: "none" },
-            display:"flex",
-            flexDirection: "column",
-            flexGrow: "0",
-            height: "100%",
-            alignItems: "center",
-            gap: "20px",
-          }}
-        >
-          { currentUser.isTeacher == false &&
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <Typography
-              variant="h4"
-              color="primary"
-            >
-              Hi {currentUser.firstname}!
-            </Typography>
-            <Typography
-              variant="h6"
-              color="primary"
-
-            >
-              Welcome to {subject.name}.
-            </Typography>
-            <Typography
-              variant="h6"
-              color="primary"
-
-            >
-              Chat with your instructor below and your AI teacher in the bigger
-              box
-            </Typography>
-          </Box>
-}
-{ currentUser.isTeacher &&
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <Typography
-              variant="h4"
-              color="primary"
-            >
-              Hi {currentUser.firstname}!
-            </Typography>
-            <Typography
-              variant="h6"
-              color="primary"
-            >
-              You are instructing {subject.name}.
-            </Typography>
-            <Typography
-              variant="h6"
-              color="primary"
-            >
-              Chat with your student below and give the AI teacher instructions in the bigger
-              box
-            </Typography>
-          </Box>
-}
-          <TeacherChat 
-          classroom={data} 
-          currentUser={currentUser} 
-          // handleSetSocketMessage = {props.handleSetSocketMessage} 
-          // receivedMessage={props.receivedMessage}
-          />
-        </Box>} */}
+<>
         <Box sx={{
           height: "100%",  
           display:"flex", 
@@ -181,14 +78,17 @@ import { useNavigate } from "react-router-dom";
           flexDirection: "column-reverse"
           }}>
           <ChatDrawer 
-                  classroom={data} 
+                  classroom={classroom} 
                   currentUser={currentUser}
+                  otherUser={otherUser}
+                  isTeacher = {currentUser._id === classroom.teacherId ? true : false}
                   // handleSetSocketMessage = {props.handleSetSocketMessage} 
                   // receivedMessage={props.receivedMessage} 
                   />
           <AiChat 
-          classroom={data}
+          classroom={classroom}
            currentUser={currentUser}
+           otherUser = {otherUser}
           //  handleSetSocketMessage = {props.handleSetSocketMessage} 
           //  receivedMessage={props.receivedMessage}
             />
@@ -198,7 +98,7 @@ import { useNavigate } from "react-router-dom";
     </>
   );
 }
-else {return (<></>)}
-  }
+  
+
 
 export default Classroom;

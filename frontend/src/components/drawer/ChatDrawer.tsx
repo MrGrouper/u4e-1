@@ -1,40 +1,34 @@
 import React, { useState } from "react";
-import {
-  IconButton,
-Box,
-SwipeableDrawer
-} from "@mui/material";
-import MessageIcon from "@mui/icons-material/Message";
+import { Box, SwipeableDrawer, Typography, Button } from "@mui/material";
+// import MessageIcon from "@mui/icons-material/Message";
 import TeacherChat from "../chat/TeacherChat";
+import CustomAvatar from "../shared/CustomAvatar";
 
-
-const ChatDrawer = (
-  props: 
-  {classroom, 
-    currentUser, 
-    // handleSetSocketMessage, 
-    // receivedMessage
-  }
-) => {
+const ChatDrawer = (props: {
+  classroom;
+  currentUser;
+  otherUser;
+  isTeacher;
+  // handleSetSocketMessage,
+  // receivedMessage
+}) => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
-    setOpenDrawer(newOpen)
-  }
+    setOpenDrawer(newOpen);
+  };
 
   const chatBox = (
-
-    <Box 
-          sx={{height:"100%"}}>
-    <TeacherChat
-    classroom = {props.classroom}
-    currentUser={props.currentUser}
-    // handleSetSocketMessage = {props.handleSetSocketMessage} 
-    // receivedMessage={props.receivedMessage}
-    />
+    <Box sx={{ height: "100%" }}>
+      <TeacherChat
+        classroom={props.classroom}
+        currentUser={props.currentUser}
+        otherUser={props.otherUser}
+        // handleSetSocketMessage = {props.handleSetSocketMessage}
+        // receivedMessage={props.receivedMessage}
+      />
     </Box>
-  )
-   
+  );
 
   return (
     <React.Fragment>
@@ -42,24 +36,52 @@ const ChatDrawer = (
         anchor="bottom"
         open={openDrawer}
         ModalProps={{ onBackdropClick: toggleDrawer(false) }}
-        onClose={() => {toggleDrawer(false)}}
-        onOpen={() => {toggleDrawer(true)}}
+        onClose={() => {
+          toggleDrawer(false);
+        }}
+        onOpen={() => {
+          toggleDrawer(true);
+        }}
         PaperProps={{
-            sx:{
-                backgroundColor: "transparent",
-                height:"90vh",
-                maxWidth:"500px"
-        }
+          sx: {
+            backgroundColor: "transparent",
+            height: "90vh",
+            maxWidth: "500px",
+          },
         }}
       >
         {chatBox}
       </SwipeableDrawer>
-      <IconButton
-        sx={{ textAlign:'center', padding:"8px 8px 0px 8px" }}
+
+      <Button
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "5px",
+          mt: "10px",
+        }}
+        variant="outlined"
         onClick={toggleDrawer(true)}
       >
-        <MessageIcon sx={{color:"primary.main"}} />
-      </IconButton>
+        <CustomAvatar
+          firstName={props.otherUser.firstname}
+          lastName={props.otherUser.lastname}
+          avatarUrl={props.otherUser.avatarUrl}
+          size={30}
+        />
+        {props.isTeacher ? (
+          <Typography variant="body1"> Chat with your student</Typography>
+        ) : (
+          <Typography variant="body1"> Chat with your Instructor</Typography>
+        )}
+      </Button>
+      {/* <IconButton
+          sx={{ textAlign: "center", padding: "8px 8px 0px 8px" }}
+          onClick={toggleDrawer(true)}
+        >
+          <MessageIcon sx={{ color: "primary.main" }} />
+        </IconButton> */}
     </React.Fragment>
   );
 };

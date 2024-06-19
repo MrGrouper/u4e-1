@@ -46,7 +46,7 @@ export const generateChatCompletion = async (req, res, next) => {
         if (lastMessageForRun) {
             const chatResponseMessage = new Message({
                 classroomId: classroomId,
-                senderId,
+                senderId: 'AI',
                 //@ts-expect-error text does exist on object
                 text: lastMessageForRun.content[0].text.value,
                 teacherStudent,
@@ -65,17 +65,16 @@ export const generateChatCompletion = async (req, res, next) => {
     }
 };
 export const sendInitialChatRequest = async (req, res, next) => {
-    const { subject, senderId, threadId, id, members } = req.body;
-    const teacherId = members.find(memberId => memberId !== senderId);
+    const { subject, threadId, id, studentId, teacherId } = req.body;
     const classroom = await Classroom.findById(id).populate("messages");
-    const student = await User.findById(senderId);
+    const student = await User.findById(studentId);
     const content = `Teacher: You are teaching ${subject}. Your student is named ${student.firstname}. Please use the pdf document that is related to ${subject} that was provided to you. Begin by greeting the student and ask them if they are ready to begin.`;
     try {
         const lastMessageForRun = await runAiAssistant(threadId, content, "user");
         if (lastMessageForRun) {
             const chatResponseMessage = new Message({
                 classroomId: id,
-                senderId,
+                senderId: 'AI',
                 //@ts-expect-error text does exist on object
                 text: lastMessageForRun.content[0].text.value,
                 teacherStudent: false,
@@ -156,10 +155,20 @@ export const sendInitialChatRequest = async (req, res, next) => {
 //     console.log(error);
 //   }
 // };
-export const getMessages = async (req, res, next) => {
+export const getAIMessages = async (req, res, next) => {
     const { classroomId } = req.params;
     try {
-        const result = await Message.find({ classroomId });
+        const result = await Message.find({ classroomId, teacherStudent: false });
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+};
+export const getTSMessages = async (req, res, next) => {
+    const { classroomId } = req.params;
+    try {
+        const result = await Message.find({ classroomId, teacherStudent: true });
         res.status(200).json(result);
     }
     catch (error) {

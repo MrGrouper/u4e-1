@@ -78,7 +78,7 @@ function App() {
   };
 
   // List of paths where the header should be displayed
-  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/onboard", "/course/:id", "/ctalog"];
+  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/onboard", "/course/:id", "/catalog"];
 
 
 
@@ -99,7 +99,7 @@ function App() {
       { (showHeader || isNotFoundPath) ? (
         <Header />
       ) : (
-        <UserHeader auth={auth} handleDrawerToggle={handleDrawerToggle} />
+        <UserHeader handleDrawerToggle={handleDrawerToggle} />
       )}
       <Box
         component="main"

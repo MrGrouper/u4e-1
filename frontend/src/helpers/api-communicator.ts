@@ -89,7 +89,7 @@ export const sendCreateClassroomRequest = async (req: object) => {
 };
 
 export const sendInitialChatRequest = async (req:{classroom: object, senderId: any}) => {
-  const reqUpdated = {...req.classroom, senderId: req.senderId}
+  const reqUpdated = {...req.classroom, studentId: req.senderId}
   console.log("req", reqUpdated)
   const res = await axios.post("/message/initialize", reqUpdated )
   if (res.status !== 200){
@@ -119,8 +119,17 @@ export const sendChatRequest = async (message: string) => {
 //   return data;
 // };
 
-export const getMessages = async (classroomId: string | Types.ObjectId | undefined ) => {
-  const res = await axios.get(`/message/${classroomId}`);
+export const getAIMessages = async (classroomId: string | Types.ObjectId | undefined ) => {
+  const res = await axios.get(`/message/ai/${classroomId}`);
+  if (res.status !== 200) {
+    throw new Error("Unable to send chat");
+  }
+  const data = await res.data;
+  return data;
+};
+
+export const getTSMessages = async (classroomId: string | Types.ObjectId | undefined ) => {
+  const res = await axios.get(`/message/ts/${classroomId}`);
   if (res.status !== 200) {
     throw new Error("Unable to send chat");
   }
@@ -190,9 +199,9 @@ export const getAllUsers = async () => {
 };
 
 
-export const getUserClassrooms = async ( id: string | Types.ObjectId | undefined) => {
+export const getStudentClassrooms = async ( userId: string | Types.ObjectId | undefined) => {
 
-const res = await axios.get(`/classroom/${id}`);
+const res = await axios.get(`/classroom/student/${userId}`);
 if (res.status !== 200) {
   throw new Error("Unable to get classrooms");
 }
@@ -201,6 +210,18 @@ const data = await res.data;
 
 return data;
 };
+
+export const getTeacherClassrooms = async ( userId: string | Types.ObjectId | undefined) => {
+
+  const res = await axios.get(`/classroom/teacher/${userId}`);
+  if (res.status !== 200) {
+    throw new Error("Unable to get classrooms");
+  }
+  
+  const data = await res.data;
+  
+  return data;
+  };
 
 export const getClassroomById = async ( id: string | Types.ObjectId | undefined) => {
 

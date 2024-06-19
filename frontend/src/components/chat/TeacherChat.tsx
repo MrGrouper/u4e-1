@@ -1,8 +1,20 @@
-import { useEffect, useState, useRef } from "react";
-import { getMessages, getUser, addMessage } from "../../helpers/api-communicator";
-import { Types } from "mongoose";
+import { useEffect, useRef } from "react";
+import { getTSMessages, addMessage } from "../../helpers/api-communicator";
+// import { Types } from "mongoose";
 import { IoMdSend } from "react-icons/io";
-import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import CustomAvatar from "../shared/CustomAvatar";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import LoadingPage from "../shared/LoadingPage";
+import ErrorWithPage from "../shared/ErrorWithPage";
+import TeacherChatItem from "./TeacherChatItem";
 
 type Classroom = {
   id: string;
@@ -19,67 +31,53 @@ type Message = {
   createdAt?: string;
 };
 
-type User = {
-  _id: Types.ObjectId;
-  createdAt: string;
-  email: string;
-  firstname: string;
-  isAdmin: boolean;
-  isTeacher: boolean;
-  lastname: string;
-  subjects: string[];
-  updatedAt: string;
-};
+// type User = {
+//   _id: Types.ObjectId;
+//   createdAt: string;
+//   email: string;
+//   firstname: string;
+//   isAdmin: boolean;
+//   isTeacher: boolean;
+//   lastname: string;
+//   subjects: string[];
+//   updatedAt: string;
+// };
 
-const TeacherChat = (props: { classroom: Classroom; currentUser: any; }) => {
+const TeacherChat = (props: {
+  classroom: Classroom;
+  currentUser: any;
+  otherUser: any;
+}) => {
   const theme = useTheme();
-  //@ts-ignore jljljl
-  const [userData, setUserData] = useState<User | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const queryClient = useQueryClient();
+
+  // const [userData, setUserData] = useState<User | null>(null);
+  // const [messages, setMessages] = useState<Message[]>([]);
 
   const scroll = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // fetching data for header
-  useEffect(() => {
-    const userId = props.classroom?.members?.find(
-      (id) => id !== props.currentUser._id
-    );
-    const getUserData = async () => {
-      try {
-        const { data } = await getUser(userId);
-        setUserData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const messagesQuery = useQuery({
+    queryKey: ["tsmessages", props.classroom.id],
+    queryFn: () => getTSMessages(props.classroom.id),
+  });
 
-    if (props.classroom !== null) getUserData();
-  }, [props.classroom, props.currentUser._id]);
-
-  // fetch messages
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const data = await getMessages(props.classroom.id);
-        setMessages(data.filter((message) => message.teacherStudent));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (props.classroom !== null) fetchMessages();
-  }, [props.classroom]);
+  const messageMutation = useMutation({
+    mutationFn: addMessage,
+  });
 
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messagesQuery.data]);
 
-  // useEffect(() => {
-  //   if (props.receivedMessage !== null && props.receivedMessage.teacherStudent == true) {
-  //     setMessages([...messages, props.receivedMessage])
-  //   }
-  // },[props.receivedMessage])
+  if (messagesQuery.isPending) {
+    return <LoadingPage />;
+  }
+
+  if (messagesQuery.isError) {
+    console.log(messagesQuery.error);
+    return <ErrorWithPage />;
+  }
 
   const handleSend = async () => {
     const content = inputRef.current?.value as string;
@@ -98,31 +96,105 @@ const TeacherChat = (props: { classroom: Classroom; currentUser: any; }) => {
     // props.handleSetSocketMessage(message)
 
     // send message to database
-    try {
-      const data = await addMessage(message);
-      setMessages([...messages, data]);
-    } catch {
-      console.log("error");
-    }
+    messageMutation.mutate(message, {
+      onSettled: async () => {
+        return await queryClient.invalidateQueries({
+          queryKey: ["tsmessages"],
+        });
+      },
+      onSuccess(data) {
+        queryClient.setQueryData(["tsmessages", data.id], data);
+        console.log(data);
+      },
+    });
   };
+
+  // fetch messages
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const data = await getTSMessages(props.classroom.id);
+  //       setMessages(data.filter((message) => message.teacherStudent));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   if (props.classroom !== null) fetchMessages();
+  // }, [props.classroom]);
+
+  // useEffect(() => {
+  //   if (props.receivedMessage !== null && props.receivedMessage.teacherStudent == true) {
+  //     setMessages([...messages, props.receivedMessage])
+  //   }
+  // },[props.receivedMessage])
+
+  // const handleSend = async () => {
+  //   const content = inputRef.current?.value as string;
+  //   if (inputRef && inputRef.current) {
+  //     inputRef.current.value = "";
+  //   }
+  //   const message: Message = {
+  //     senderId: props.currentUser._id,
+  //     text: content,
+  //     classroomId: props.classroom.id,
+  //     teacherStudent: true,
+  //     role: props.currentUser.isTeacher ? "teacher" : "student",
+  //   };
+  //   // send message to socket
+  //   // console.log("Sending message to socket:", message);
+  //   // props.handleSetSocketMessage(message)
+
+  //   // send message to database
+  //   try {
+  //     const data = await addMessage(message);
+  //     setMessages([...messages, data]);
+  //   } catch {
+  //     console.log("error");
+  //   }
+  // };
 
   return (
     <>
-      <Box className="ChatBox-container" sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        maxWidth: "100%",
-        width: "100%",
-        alignContent: "space-between",
-        border: "1px solid",
-        borderRadius: "10px",
-        bgcolor: "primary.light",
-        [theme.breakpoints.up('sm')]: {
-          maxWidth: "500px",
-        },
-      }}>
-        <Box className="chat-body"
+      <Box
+        className="ChatBox-container"
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "100%",
+          width: "100%",
+          alignContent: "space-between",
+          borderRadius: "10px",
+          bgcolor: "primary.light",
+          [theme.breakpoints.up("sm")]: {
+            maxWidth: "500px",
+          },
+        }}
+      >
+        <Box
+          bgcolor="secondary.main"
+          sx={{
+            padding: "10px 24px 10px 24px",
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            gap: "20px",
+            borderRadius: "10px 10px 0px 0px",
+          }}
+        >
+          <CustomAvatar
+            firstName={props.otherUser.firstname}
+            lastName={props.otherUser.lastname}
+            avatarUrl={props.otherUser.avatarUrl}
+            size={40}
+          />
+          <Typography variant="body1">
+            {props.otherUser.firstname} {props.otherUser.lastname}
+          </Typography>
+        </Box>
+        <Box
+          className="chat-body"
           sx={{
             backgroundColor: "transparent",
             display: "flex",
@@ -130,34 +202,25 @@ const TeacherChat = (props: { classroom: Classroom; currentUser: any; }) => {
             flexDirection: "column",
             gap: "0.5rem",
             padding: "1.5rem",
-            overflowY: "auto"
+            overflowY: "auto",
           }}
         >
-          {messages?.map((message) => (
-            <Box
-              key={message.createdAt}
-              ref={scroll}
-              sx={{
-                padding: "0.7rem",
-                borderRadius: message.senderId !== props.currentUser._id ? "1rem 1rem 1rem 0" : "1rem 1rem 0 1rem",
-                maxWidth: "28rem",
-                width: "fit-content",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-                alignSelf: message.senderId !== props.currentUser._id ? "flex-start" : "flex-end",
-                bgcolor: message.senderId !== props.currentUser._id ? "white" : "secondary.main",
-              }}
-            >
-              <Typography
-                variant="body2"
-                alignSelf={"end"}
-                color={message.senderId !== props.currentUser._id ? "primary" : "white"}
-              >
-                {message.text}
-              </Typography>
-            </Box>
+          {messagesQuery.data?.map((message, index) => (
+            <TeacherChatItem
+              message={message}
+              currentUser={props.currentUser}
+              otherUser={props.otherUser}
+              scroll={scroll}
+              key={index}
+              />
           ))}
+          {messageMutation.isPending && 
+          <TeacherChatItem
+          message={messageMutation.variables}
+          currentUser={props.currentUser}
+          otherUser={props.otherUser}
+          scroll={scroll}
+          />}
         </Box>
 
         {/* chat-sender */}
@@ -179,14 +242,17 @@ const TeacherChat = (props: { classroom: Classroom; currentUser: any; }) => {
             variant="outlined"
             sx={{ bgcolor: "primary.light" }}
             InputProps={{
-              sx: { borderRadius: "50px", bgcolor: "white", height:"40px" },
+              sx: { borderRadius: "50px", bgcolor: "white", height: "40px" },
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleSend} sx={{ color: "black", mx: 1 }}>
+                  <IconButton
+                    onClick={handleSend}
+                    sx={{ color: "black", mx: 1 }}
+                  >
                     <IoMdSend />
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
         </Box>

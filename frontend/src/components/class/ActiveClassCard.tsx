@@ -21,13 +21,11 @@ const ActiveClassCard = (props: { teacherId; classroom }) => {
   const [subject, setSubject] = useState(null);
 
   useEffect(() => {
-    const studentId = props.classroom.members.filter(
-      (member) => member !== props.teacherId
-    );
-    if (studentId.length !== 1) {
+    const studentId = props.classroom.studentId
+    if (!studentId) {
       console.log("student does not exist");
     } else {
-      getUser(studentId[0]).then((data) => {
+      getUser(studentId).then((data) => {
         setUser(data);
       });
       getSubject(props.classroom.subjectId).then((data) => {

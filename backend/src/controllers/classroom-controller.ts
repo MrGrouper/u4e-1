@@ -10,7 +10,7 @@ export const createClassroom = async (
   res: Response,
   next: NextFunction
 ) => {
-  const {subjectId, senderId, receiverId} = req.body
+  const {subjectId, studentId, teacherId} = req.body
   console.log('req.body', req.body)
   const subject = await Subject.findById(subjectId)
   console.log('subject log', subject)
@@ -24,7 +24,8 @@ export const createClassroom = async (
   });
 
   const newClassroom = new Classroom({
-    members: [senderId, receiverId],
+    studentId: studentId,
+    teacherId: teacherId,
     subjectId: subjectId,
     threadId: thread.id,
     messages: [],
@@ -39,35 +40,38 @@ export const createClassroom = async (
   }
 };
 
-export const userClassrooms = async (
+export const studentClassrooms = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const { userId } = req.params;
     const classroom = await Classroom.find({
-      members: { $in: [req.params.userId] },
-    });
+      studentId: userId
+    }).populate("subjectId")
     res.status(200).json(classroom);
   } catch (error) {
     res.status(500).json(error);
   }
 };
 
-export const findClassroom = async (
+export const teacherClassrooms = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const classroom = await Classroom.findOne({
-      members: { $all: [req.params.firstId, req.params.secondId] },
-    });
+    const { userId } = req.params;
+    const classroom = await Classroom.find({
+      teacherId: userId
+    }).populate("subjectId");
     res.status(200).json(classroom);
   } catch (error) {
     res.status(500).json(error);
   }
 };
+
 
 export const findClassroomById = async (
   req: Request,
@@ -76,7 +80,7 @@ export const findClassroomById = async (
 ) => {
   const {id} = req.params
   try {
-    const classroom = await Classroom.findById(id);
+    const classroom = await Classroom.findById(id)
     res.status(200).json(classroom);
   } catch (error) {
     res.status(500).json(error);

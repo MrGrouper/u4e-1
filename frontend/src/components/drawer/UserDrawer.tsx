@@ -4,7 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import UserDrawerLinks from "./UserDrawerLinks";
 
 const UserDrawer = ({ handleDrawerToggle }) => {
-  const [openDrawer, setOpenDrawer] = useState(true);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const drawerWidth = "240px";
 
 

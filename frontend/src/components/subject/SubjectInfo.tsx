@@ -101,7 +101,7 @@ const SubjectInfo = (props: { subject: Subject }) => {
           borderRadius: 2,
         }}
       >
-        Create Class
+        Update Course
       </Button>
     </form>
   );

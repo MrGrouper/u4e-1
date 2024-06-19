@@ -11,7 +11,6 @@ export const createSubject = async (
   const {name, teacherId, curriculum, vectorStoreFileId, courseDescription, imageUrl, videos} = req.body
 
   const teacher = await User.findById(teacherId)
-  console.log(teacher)
 
   const newSubject = new Subject({
     name,
@@ -24,9 +23,7 @@ export const createSubject = async (
   });
   try {
     const result = await newSubject.save();
-    console.log(result._id)
     teacher.subjects = teacher.subjects.concat(result._id)
-    console.log(teacher)
     await teacher.save()
     res.status(200).json(result);
   } catch (error) {
@@ -40,10 +37,8 @@ export const findSubject = async (
   next: NextFunction
 ) => {
   const {id} = req.params
-  console.log('id', req)
   try {
     const subject = await Subject.findById(id)
-    console.log('subject', subject)
     if (subject){ 
       res.status(200).json(subject)
     }
@@ -58,15 +53,13 @@ export const findSubjectWithClassrooms = async (
   next: NextFunction
 ) => {
   const {id} = req.params
-  console.log('id', req)
   try {
     const subject = await Subject.findById(id).populate("classrooms")
-    console.log('subject', subject)
     if (subject){ 
       res.status(200).json(subject)
     }
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error.message)
   }
 };
 
@@ -99,7 +92,6 @@ export const subjectUpdate = async (
     if (subject.teacherId.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permissions didn't match");
     }
-    console.log(subject)
 
     return res
       .status(200)

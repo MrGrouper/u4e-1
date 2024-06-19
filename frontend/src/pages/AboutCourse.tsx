@@ -29,7 +29,7 @@ const AboutCourse = () => {
     queryFn: () => getSubjectWithClassrooms(id),
   });
 
-
+  console.log("subject", subject)
   const teacherId = subject?.teacherId;
 
   const {
@@ -71,14 +71,15 @@ const AboutCourse = () => {
   const handleEnroll = (e) => {
     e.preventDefault();
     const req = {
-      senderId: auth.user._id,
-      receiverId: subject.teacherId,
+      studentId: auth.user._id,
+      teacherId: subject.teacherId,
       subjectId: subject.id,
     };
     classroomMutation.mutate(req, {
       onSuccess(data) {
+        console.log('data', data)
         initialChatRequestMutation.mutate(
-          { classroom: data, senderId: req.senderId },
+          { classroom: data, senderId: req.studentId },
           {
             onSuccess: () => {
               toast.success(`enrolled in ${subject.name}`);
@@ -155,7 +156,7 @@ const AboutCourse = () => {
               </Typography>
             </Box>
             {subject?.classrooms.some((classroom) =>
-              classroom.members.includes(auth.user._id)
+              classroom.studentId === auth.user._id
             ) ? (
               <Button
                 size="medium"

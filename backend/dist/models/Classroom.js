@@ -5,9 +5,13 @@ const classroomSchema = new mongoose.Schema({
         ref: 'Subject',
         required: true
     },
-    members: {
-        type: Array,
-        required: true,
+    studentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    teacherId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     threadId: {
         type: String,

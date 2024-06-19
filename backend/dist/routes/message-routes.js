@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addMessage, getMessages, generateChatCompletion, sendInitialChatRequest } from '../controllers/message-controller.js';
+import { addMessage, generateChatCompletion, sendInitialChatRequest, getAIMessages, getTSMessages } from '../controllers/message-controller.js';
 import { verifyToken } from "../utils/token-manager.js";
 import { chatCompletionValidator, validate } from "../utils/validators.js";
 const messageRouter = Router();
@@ -8,6 +8,7 @@ messageRouter.post('/new', validate(chatCompletionValidator), verifyToken, gener
 messageRouter.post('/initialize', 
 // validate(chatCompletionValidator),
 verifyToken, sendInitialChatRequest);
-messageRouter.get('/:classroomId', verifyToken, getMessages);
+messageRouter.get('/ai/:classroomId', verifyToken, getAIMessages);
+messageRouter.get('/ts/:classroomId', verifyToken, getTSMessages);
 export default messageRouter;
 //# sourceMappingURL=message-routes.js.map

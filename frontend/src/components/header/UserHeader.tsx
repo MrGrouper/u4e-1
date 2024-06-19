@@ -10,12 +10,14 @@ import {
 import Logo from "../shared/Logo";
 import { Link } from "react-router-dom";
 import UserDrawer from "../drawer/UserDrawer";
-import CustomAvatar from "../shared/CustomAvatar";
+import { useAuth } from "../../context/AuthContext";
+import HeaderAvatar from "../shared/HeaderAvatar";
 
 const UserHeader = (props) => {
-  const { auth, handleDrawerToggle } = props;
+  const { handleDrawerToggle } = props;
+  const auth = useAuth()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  console.log(props.auth)
+
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -52,7 +54,7 @@ const UserHeader = (props) => {
           aria-haspopup="true"
           onClick={handleMenu}
         >
-          <CustomAvatar firstName={props.auth?.user?.firstname} lastName={props.auth?.user?.lastname}avatarUrl={auth?.user?.avatarUrl} size={40}/>
+          <HeaderAvatar size={40}/>
         </IconButton>
         <Menu
           id="menu-appbar"
