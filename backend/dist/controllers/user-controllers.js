@@ -56,7 +56,6 @@ export const studentSignup = async (req, res, next) => {
         expires.setDate(expires.getDate() + 7);
         res.cookie(COOKIE_NAME, token, {
             path: "/",
-            // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
             // domain: 'u4education.com',
             expires,
