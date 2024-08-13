@@ -71,7 +71,6 @@ export const studentSignup = async (
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-<<<<<<< HEAD
       // domain: "u4e-zjbtlzdxca-uc.a.run.app",
       domain: 'localhost',
       // domain: 'u4education.com',
@@ -123,9 +122,6 @@ export const teacherSignup = async (
       // domain: "u4e-zjbtlzdxca-uc.a.run.app",
       domain: 'localhost',
       // domain: 'u4education.com',
-=======
-      domain: "u4e.onrender.com",
->>>>>>> parent of 142c3b5 (working locally models slightly updated.)
       expires,
       httpOnly: false,
       secure: true,
