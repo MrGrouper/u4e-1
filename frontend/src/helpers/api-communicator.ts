@@ -90,7 +90,6 @@ export const sendCreateClassroomRequest = async (req: object) => {
 
 export const sendInitialChatRequest = async (req:{classroom: object, senderId: any}) => {
   const reqUpdated = {...req.classroom, studentId: req.senderId}
-  console.log("req", reqUpdated)
   const res = await axios.post("/message/initialize", reqUpdated )
   if (res.status !== 200){
     throw new Error("Unable to create classroom");
@@ -139,7 +138,6 @@ export const getTSMessages = async (classroomId: string | Types.ObjectId | undef
 
 export const addMessage = async (message: Message) => {
   const res = await axios.post('/message/', message );
-  // console.log(res)
   if (res.status !== 200) {
     throw new Error("Unable to send message");
   }
@@ -150,7 +148,6 @@ export const addMessage = async (message: Message) => {
 
 export const addAiMessage = async (message: Message) => {
   const res = await axios.post('/message/new', message );
-  // console.log(res)
   if (res.status !== 200) {
     throw new Error("Unable to send message");
   }
@@ -183,7 +180,6 @@ export const getUser = async ( id: string | Types.ObjectId | undefined ) => {
     throw new Error("Unable to get user");
   }
   const data = await res.data;
-  console.log('apicom', data)
 
   return data;
 };
@@ -242,20 +238,8 @@ export const uploadImage = async (formData: FormData) => {
     },
   };
   const res = await axios.post('/upload/image', formData, config );
-  // console.log(res)
   if (res.status !== 200) {
     throw new Error("Unable to upload image");
-  }
-
-  const data = await res.data;
-  return data;
-};
-
-export const updateUser = async ( user: User ) => {
-  const res = await axios.put(`/user/${user._id}/update`, user );
-  // console.log(res)
-  if (res.status !== 200) {
-    throw new Error("Unable to update user");
   }
 
   const data = await res.data;
@@ -269,11 +253,52 @@ export const uploadCurriculum = async (formData: FormData) => {
     },
   };
   const res = await axios.post('/upload/curriculum', formData, config );
-  // console.log(res)
   if (res.status !== 200) {
     throw new Error("Unable to upload file");
   }
 
+  const data = await res.data;
+  return data;
+};
+
+export const uploadNewSubject = async (formData: FormData) => {
+  const config = {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  };
+  const res = await axios.post('/upload/new-subject', formData, config );
+  if (res.status !== 200) {
+    throw new Error("Unable to upload files");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
+
+export const updateUser = async ( user: User ) => {
+  const res = await axios.put(`/user/${user._id}/update`, user );
+  if (res.status !== 200) {
+    throw new Error("Unable to update user");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
+export const changeUserPassword = async (
+  userId: string | Types.ObjectId,
+  currentPassword: string,
+  newPassword: string
+) => {
+  const res = await axios.post(`/user/${userId}/changePassword`, {
+    currentPassword,
+    newPassword,
+  });
+  if (res.status !== 200) {
+    throw new Error("Unable to change password");
+  }
   const data = await res.data;
   return data;
 };
@@ -325,7 +350,6 @@ export const getSubject = async ( id: string | Types.ObjectId | undefined) => {
 
   export const updateSubject = async (subject) => {
     const res = await axios.put(`/subject/${subject.id}/update`, subject );
-    // console.log(res)
     if (res.status !== 200) {
       throw new Error("Unable to update subject");
     }
@@ -333,3 +357,23 @@ export const getSubject = async ( id: string | Types.ObjectId | undefined) => {
     const data = await res.data;
     return data;
   };
+
+  export const sendUpdateChatRequest = async (req:{classroomId: Types.ObjectId | string, subjectName: string, vectorStoreFileId: string, additionalInstructions: string}) => {
+
+    const res = await axios.post("/message/update", req )
+    if (res.status !== 200){
+      throw new Error("Unable to send classroom update message");
+    }
+    const data = await res.data;
+    return data;
+  }
+
+  export const ttsRequest = async (text) => {
+    console.log(text)
+    const res = await axios.post("/message/tts", {text:text}, {responseType:"blob"})
+    if (res.status !== 200){
+      throw new Error("Unable to send tts audio message");
+    }
+    const data = await res.data
+    return data
+  }

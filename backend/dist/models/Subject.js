@@ -28,7 +28,11 @@ const subjectSchema = new mongoose.Schema({
     classrooms: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Classroom'
-        }]
+        }],
+    additionalInstructions: {
+        type: String,
+        default: ""
+    }
 }, { timestamps: true });
 subjectSchema.set('toJSON', {
     transform: (document, returnedObject) => {

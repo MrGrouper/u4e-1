@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getAIMessages,
   addAiMessage,
+  ttsRequest,
 } from "../../helpers/api-communicator";
 import ChatItem from "./ChatItem";
 // import InputEmoji from "react-input-emoji";
@@ -14,6 +15,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ChatItemLoading from "./ChatItemLoading";
 import LoadingPage from "../shared/LoadingPage";
 import ErrorWithPage from "../shared/ErrorWithPage";
+import TextToSpeech from "./TextToSpeech";
+// import Recorder from "./Recorder";
 
 type Classroom = {
   id: string;
@@ -47,16 +50,26 @@ type Message = {
 const AiChat = (props: {
   classroom: Classroom;
   currentUser: any;
-  otherUser: any
+  otherUser: any;
   // handleSetSocketMessage;
   // receivedMessage
 }) => {
-
   // const [userData, setUserData] = useState<User | null>(null);
   // const [messages, setMessages] = useState<Message[] | []>([]);
   const scroll = useRef<HTMLDivElement>();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  // const [transcript, setTranscript] = useState<string>("");
+  const [audio, setAudio] = useState("");
+  const [ttsOn, setTtsOn] = useState(false);
+
+  //   useEffect(() => {
+  //   if (transcript && inputRef.current) {
+  //     inputRef.current.value = transcript;
+  //   }
+  // }, [transcript]);
+
+  // console.log(transcript)
 
   // let otherUserId;
 
@@ -76,11 +89,13 @@ const AiChat = (props: {
     queryFn: () => getAIMessages(props.classroom.id),
   });
 
-
   const messageMutation = useMutation({
-    mutationFn: addAiMessage
-  })
+    mutationFn: addAiMessage,
+  });
 
+  const audioMutation = useMutation({
+    mutationFn: ttsRequest,
+  });
 
   // useEffect(() => {
   //   const userId = props.classroom?.members?.find(
@@ -119,12 +134,12 @@ const AiChat = (props: {
   }, [messagesQuery]);
 
   if (messagesQuery.isPending) {
-    return <LoadingPage/>
+    return <LoadingPage />;
   }
 
   if (messagesQuery.isError) {
-    console.log(messagesQuery.error)
-    return <ErrorWithPage/>
+    console.log(messagesQuery.error);
+    return <ErrorWithPage />;
   }
 
   // useEffect(() => {
@@ -162,6 +177,16 @@ const AiChat = (props: {
   //   }
   // };
 
+
+  const handleTtsClick = () =>{
+    if (ttsOn) {
+      setTtsOn(false);
+    } else {
+      setTtsOn(true)
+    }
+  };
+    
+
   const handleSend = async () => {
     const content = inputRef.current?.value as string;
     console.log("content", content);
@@ -173,22 +198,41 @@ const AiChat = (props: {
       text: content,
       classroomId: props.classroom.id,
       teacherStudent: false,
-      role: props.currentUser.id === props.classroom.teacherId ? "teacher" : "student",
+      role:
+        props.currentUser.id === props.classroom.teacherId
+          ? "teacher"
+          : "student",
     };
-     // send message to socket server
+    // send message to socket server
     // props.handleSetSocketMessage(message)
     // send message to database
-    messageMutation.mutate(message, {
+    messageMutation.mutateAsync(message, {
       onSettled: async () => {
-        return await queryClient.invalidateQueries({queryKey: ["messages"]})
+        return await queryClient.invalidateQueries({ queryKey: ["messages"] });
       },
       onSuccess(data) {
-        queryClient.setQueryData(['messages', data.id], data)
-        console.log(data)
+        queryClient.setQueryData(["messages", data.id], data);
+        console.log(data);
         // props.handleSetSocketMessage(data)
-      }
-    })
+        if (ttsOn) {
+        audioMutation.mutateAsync(data.text, {
+          onSuccess(data) {
+            let url = window.URL.createObjectURL(data);
+            setAudio(url);
+          },
+        })
+      };
+      },
+    });
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSend(); // Call handleSend when Enter is pressed
+    }
+  };
+
   return (
     <>
       <Box
@@ -197,7 +241,7 @@ const AiChat = (props: {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          height: "calc(100% - 32px)",
+          height: "calc(100% - 42px)",
           width: "100%",
         }}
       >
@@ -210,7 +254,7 @@ const AiChat = (props: {
             overflowY: "auto",
             flex: "1 1 auto",
             minHeight: "0px",
-            padding: "20px 0 20px 0",
+            padding: "5px 0 20px 0",
           }}
         >
           {messagesQuery.data?.map((message, index) => (
@@ -221,30 +265,32 @@ const AiChat = (props: {
                   content={message.text}
                   role={message.role}
                   key={index}
-                  currentUser={message.senderId === props.currentUser._id ? props.currentUser : props.otherUser}
+                  currentUser={
+                    message.senderId === props.currentUser._id
+                      ? props.currentUser
+                      : props.otherUser
+                  }
                   // currentUser={props.currentUser}
                 />
               </Box>
             </>
           ))}
-          {messageMutation.isPending && 
-                      <>
-                      <Box paddingTop={"20px"}>
-                        {messageMutation.variables.senderId === props.currentUser._id}
-                        <ChatItem
-                          content={messageMutation.variables.text}
-                          role={messageMutation.variables.role}
-                          currentUser={props.currentUser}
-                        />
-                      </Box>
-                      <Box ref={scroll} paddingTop={"20px"}>
-                        {messageMutation.variables.senderId === props.currentUser._id}
-                        <ChatItemLoading
-                          
-                        />
-                      </Box>
-                    </>
-          }
+          {messageMutation.isPending && (
+            <>
+              <Box paddingTop={"20px"}>
+                {messageMutation.variables.senderId === props.currentUser._id}
+                <ChatItem
+                  content={messageMutation.variables.text}
+                  role={messageMutation.variables.role}
+                  currentUser={props.currentUser}
+                />
+              </Box>
+              <Box ref={scroll} paddingTop={"20px"}>
+                {messageMutation.variables.senderId === props.currentUser._id}
+                <ChatItemLoading />
+              </Box>
+            </>
+          )}
         </Box>
         {/* chat-sender */}
         <Box
@@ -257,11 +303,14 @@ const AiChat = (props: {
             width: "100%",
           }}
         >
+          <TextToSpeech audio={audio} handleClick = {handleTtsClick} isOn = {ttsOn} audioPending={audioMutation.isPending}/>
           <TextField
             inputRef={inputRef}
             fullWidth
             variant="outlined"
             type="text"
+            onKeyDown={handleKeyDown}
+            sx={{ pl: "10px", pr: "10px" }}
             InputProps={{
               sx: { borderRadius: "50px", bgcolor: "white", height: "40px" },
               endAdornment: (

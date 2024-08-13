@@ -11,14 +11,12 @@ export const createClassroom = async (
   next: NextFunction
 ) => {
   const {subjectId, studentId, teacherId} = req.body
-  console.log('req.body', req.body)
   const subject = await Subject.findById(subjectId)
-  console.log('subject log', subject)
   const thread = await openai.beta.threads.create({
     messages: [
       {
         role: "user",
-        content: `You are teaching ${subject.name} please use the curriculum that matches ${subject.vectorStoreFileId}`,
+        content: `You are teaching ${subject.name} please use the curriculum that matches ${subject.vectorStoreFileId} ${subject.additionalInstructions}`,
       },
     ],
   });

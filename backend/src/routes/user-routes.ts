@@ -8,6 +8,7 @@ import {
   studentSignup,
   verifyUser,
   getUser,
+  userChangePassword,
 } from "../controllers/user-controllers.js";
 import {
   loginValidator,
@@ -26,5 +27,6 @@ userRoutes.get("/auth-status", verifyToken, verifyUser);
 userRoutes.get("/logout", verifyToken, userLogout);
 userRoutes.put("/:id/update", verifyToken, userUpdate);
 userRoutes.get("/:id", getUser);
+userRoutes.post("/:id/changePassword", verifyToken, userChangePassword);
 
 export default userRoutes;

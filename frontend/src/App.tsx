@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Classroom from "./pages/Classroom";
 import NotFound from "./pages/NotFound";
-import { useAuth } from "./context/AuthContext";
+// import { useAuth } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Onboard from "./pages/Onboard";
 import AccountSettings from "./pages/AccountSettings";
@@ -20,6 +20,11 @@ import TeacherCodeForm from "./pages/TeacherCodeForm";
 import SubjectUpdate from "./pages/SubjectUpdate";
 import UserHeader from "./components/header/UserHeader";
 import CourseCatalog from "./pages/CourseCatalog";
+import PrivateRoutes from "./components/route-helpers/PrivateRoutes";
+import TeacherRoutes from "./components/route-helpers/TeacherRoutes";
+import About from "./pages/About";
+import Contribute from "./pages/Contribute";
+import ChangePassword from "./pages/ChangePassword";
 
 // import { Socket, io } from 'socket.io-client';
 
@@ -42,7 +47,7 @@ import CourseCatalog from "./pages/CourseCatalog";
 // });
 
 function App() {
-  const auth = useAuth();
+  // const auth = useAuth();
   const location = useLocation();
   const [isCodeValid, setIsCodeValid] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
@@ -78,7 +83,7 @@ function App() {
   };
 
   // List of paths where the header should be displayed
-  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/onboard", "/course/:id", "/catalog"];
+  const headerPaths = ["/", "/login", "/signup", "/teachersignup", "/onboard", "/course/:id", "/catalog", "/about", "/contribute"];
 
 
 
@@ -104,15 +109,21 @@ function App() {
       <Box
         component="main"
         sx={{
+          display:"flex",
           mt: "65px",
-          padding:"0px 10px 10px 10px",
-          height:"calc(100vh - 75px)",
-          marginLeft: showHeader ? "0px" : { sm: drawerOpen ? '240px' : '0px' }, // Adjust main content based on drawer state
+          height:"calc(100vh - 65px)",
+          width: showHeader ? "100vw" : {
+            md: drawerOpen ? "calc(100vw - 240px)" : "100vw"
+          },
+          padding: "0px",
+          marginLeft: showHeader ? "0px" : { md: drawerOpen ? '240px' : '0px' }, // Adjust main content based on drawer state
           transition: 'margin-left 0.3s ease'
         }}
       >
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contribute" element={<Contribute/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
@@ -123,18 +134,23 @@ function App() {
           />
           <Route path="/catalog" element={<CourseCatalog />} />
           <Route path="/course/:id" element={<AboutCourse />} />
-          {auth?.isLoggedIn && auth.user && (
-            <>
+          {/* {auth?.isLoggedIn && auth.user && (
+            <> */}
+            <Route element={<PrivateRoutes />}>
               <Route path="/account-settings" element={<AccountSettings />} />
+              <Route path="/change-password" element={<ChangePassword />} />
               <Route path="/onboard" element={<Onboard />} />
-              {auth.user.isTeacher && <Route path="/addsubject" element={<AddSubject />} />}
-              {!auth.user.isTeacher && <Route path="/dashboard" element={<Dashboard />} />}
-              {auth.user.isTeacher && <Route path="/portal" element={<Portal />} />}
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/classroom/:id" element={<Classroom />} />
               <Route path="/:id/onboard" element={<SubjectOnboard />} />
               <Route path="/:id/update" element={<SubjectUpdate />} />
-            </>
-          )}
+              <Route element={<TeacherRoutes />}>
+              <Route path="/addsubject" element={<AddSubject />} />
+              <Route path="/portal" element={<Portal />} />
+              </Route>
+              </Route>
+            {/* </>
+          )} */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Box>

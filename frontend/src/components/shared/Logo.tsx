@@ -12,10 +12,10 @@ const Logo = () => {
     >
       <Link to={"/"}>
         <img
-          src={window.location.origin + "/openai.png"}
+          src={"https://storage.googleapis.com/u4e/assets/artificial-intelligence-34.svg"}
           alt="openai"
-          width={"30px"}
-          height={"30px"}
+          width={"40px"}
+          height={"40px"}
           className="image-inverted"
         />
       </Link>

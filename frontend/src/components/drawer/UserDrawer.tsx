@@ -1,12 +1,18 @@
-import React, { useState } from "react";
-import { Drawer, IconButton} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Drawer, IconButton, useMediaQuery} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import UserDrawerLinks from "./UserDrawerLinks";
 
 const UserDrawer = ({ handleDrawerToggle }) => {
+  const isLargeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const [openDrawer, setOpenDrawer] = useState(false);
-  const drawerWidth = "240px";
 
+  const drawerWidth = "240px";
+  
+  useEffect(() => {
+    handleDrawerToggle(isLargeScreen);
+    setOpenDrawer(isLargeScreen)
+  }, [isLargeScreen]);
 
   const handleDrawerOpen = () => {
     setOpenDrawer(true);
@@ -32,11 +38,11 @@ const UserDrawer = ({ handleDrawerToggle }) => {
           }
         }}
         sx={{
-          display: { xs: 'block', sm: 'none' },
+          display: { sm: 'block', md: 'none' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
         }}
       >
-        <UserDrawerLinks />
+        <UserDrawerLinks handleDrawerClose = { handleDrawerClose}/>
       </Drawer>
       <Drawer
         anchor="left"
@@ -48,11 +54,11 @@ const UserDrawer = ({ handleDrawerToggle }) => {
           }
         }}
         sx={{
-          display: { xs: 'none', sm: 'block' },
+          display: { sm: 'none', md: 'block' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
         }}
       >
-        <UserDrawerLinks />
+        <UserDrawerLinks handleDrawerClose={handleDrawerClose}/>
       </Drawer>
       <IconButton
         sx={{ marginLeft: "auto", paddingLeft:"0px", paddingRight:"20px"}}

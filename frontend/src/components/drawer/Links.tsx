@@ -17,7 +17,7 @@ export const Links = () => {
             Course Catalog
     </Button>
     <Button 
-        onClick={()=>navigate('/')}
+        onClick={()=>navigate('/about')}
         size='medium'
         sx={{
         borderRadius:"20px",
@@ -26,7 +26,7 @@ export const Links = () => {
             About
     </Button>
     <Button 
-        onClick={()=>navigate('/')}
+        onClick={()=>navigate('/contribute')}
         size='medium'
         sx={{
         borderRadius:"20px",

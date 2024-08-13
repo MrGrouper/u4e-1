@@ -9,15 +9,23 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useQueries } from "@tanstack/react-query";
 import ErrorWithPage from "../components/shared/ErrorWithPage";
 import LoadingPage from "../components/shared/LoadingPage";
+import { useEffect } from "react";
 
 const Portal = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const subjectArr = auth.user.subjects;
+  useEffect(() => {
+    if (!auth?.user || !auth.isLoggedIn) {
+      return navigate("/login");
+    }
+  }, [auth, navigate]);
+
+  const subjectArr = auth?.user?.subjects;
+
 
   const subjectQueries = useQueries({
-    queries: subjectArr.map((subjectId) => {
+    queries: subjectArr?.map((subjectId) => {
       return {
         queryKey: ["subject", subjectId],
         queryFn: () => getSubjectWithClassrooms(subjectId),
@@ -25,11 +33,13 @@ const Portal = () => {
     }),
   });
 
-  const isLoading = subjectQueries.some((query) => query.isLoading);
-  const isError = subjectQueries.some((query) => query.isError);
+
+
+  const isLoading = subjectQueries?.some((query) => query.isLoading);
+  const isError = subjectQueries?.some((query) => query.isError);
 
   const classrooms = [];
-  const subjects = subjectQueries.map((query) => {
+  const subjects = subjectQueries?.map((query) => {
     if (query.data) {
       query.data.classrooms.forEach((classroom) => classrooms.push(classroom));
     }
@@ -44,6 +54,7 @@ const Portal = () => {
     return <ErrorWithPage />;
   }
 
+
   return (
     <Box
       component="div"
@@ -51,17 +62,17 @@ const Portal = () => {
         display: "flex",
         flexDirection: "column",
         height: "calc(100vh - 110px)",
+        width:{md: "calc(100vw - 290px)"},
         overflow: "hidden",
         overflowY: "scroll",
         gap: "25px",
+        padding: "25px",
       }}
     >
       <Box display={"flex"} flexDirection={"column"}>
         <Typography
           variant="h4"
-          sx={{
-            padding: "20px 20px 0px 20px",
-          }}
+          pb={"20px"}
         >
           Active Classes
         </Typography>
@@ -79,7 +90,7 @@ const Portal = () => {
               return (
                 <ActiveClassCard
                   key={classroom.id}
-                  teacherId={auth.user._id}
+                  teacherId={auth?.user?._id}
                   classroom={classroom}
                 />
               );
@@ -100,7 +111,8 @@ const Portal = () => {
           <Typography variant="h4">Your Offered Courses</Typography>
           <Button
             size="small"
-            variant="outlined"
+            variant="contained"
+            color="secondary"
             onClick={() => navigate("/addsubject")}
           >
             <Box
@@ -112,7 +124,7 @@ const Portal = () => {
               }}
             >
               <AddCircleOutlineIcon />
-              Add New Course
+              Add Course
             </Box>
           </Button>
         </Box>

@@ -66,7 +66,7 @@ const CourseCard = (props: { subject: Subject, classroomId }) => {
           {props.subject.name}
         </Typography>
         <Typography variant="body2">
-          {truncate(props.subject.courseDescription)}
+        {props.subject.courseDescription && truncate(props.subject.courseDescription)}
         </Typography>
       </CardContent>
             <CardActions color="#004643">

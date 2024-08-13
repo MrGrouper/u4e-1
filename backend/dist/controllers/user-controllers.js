@@ -39,7 +39,7 @@ export const studentSignup = async (req, res, next) => {
         if (existingUser)
             return res.status(401).send("User already registered");
         const hashedPassword = await hash(password, 10);
-        const user = new User({ firstname, lastname, email, password: hashedPassword, isTeacher: false, isAdmin: false, avatarUrl });
+        const user = new User({ firstname, lastname, email: email.toLowerCase(), password: hashedPassword, isTeacher: false, isAdmin: false, avatarUrl });
         await user.save();
         // create token and store cookie
         res.clearCookie(COOKIE_NAME, {
@@ -47,6 +47,7 @@ export const studentSignup = async (req, res, next) => {
             secure: true,
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             signed: true,
             path: "/",
         });
@@ -57,6 +58,7 @@ export const studentSignup = async (req, res, next) => {
             path: "/",
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             expires,
             httpOnly: false,
             secure: true,
@@ -75,11 +77,11 @@ export const teacherSignup = async (req, res, next) => {
     try {
         //user signup
         const { firstname, lastname, email, password, subjects, avatarUrl } = req.body;
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (existingUser)
             return res.status(401).send("User already registered");
         const hashedPassword = await hash(password, 10);
-        const user = new User({ firstname, lastname, email, password: hashedPassword, isTeacher: true, isAdmin: false, subjects, avatarUrl });
+        const user = new User({ firstname, lastname, email: email.toLowerCase(), password: hashedPassword, isTeacher: true, isAdmin: false, subjects, avatarUrl });
         await user.save();
         // create token and store cookie
         res.clearCookie(COOKIE_NAME, {
@@ -87,6 +89,7 @@ export const teacherSignup = async (req, res, next) => {
             secure: true,
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             signed: true,
             path: "/",
         });
@@ -97,6 +100,7 @@ export const teacherSignup = async (req, res, next) => {
             path: "/",
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             expires,
             httpOnly: false,
             secure: true,
@@ -115,7 +119,7 @@ export const userLogin = async (req, res, next) => {
     try {
         //user login
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email.toLowerCase() });
         if (!user) {
             return res.status(401).send("User not registered");
         }
@@ -129,6 +133,7 @@ export const userLogin = async (req, res, next) => {
             secure: true,
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             signed: true,
             path: "/",
         });
@@ -139,6 +144,7 @@ export const userLogin = async (req, res, next) => {
             path: "/",
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             expires,
             httpOnly: false,
             secure: true,
@@ -172,41 +178,43 @@ export const verifyUser = async (req, res, next) => {
         return res.status(500).json({ message: "ERROR", cause: error.message });
     }
 };
-export const userUpdatePassword = async (req, res, next) => {
-    const { password } = req.body;
+export const userChangePassword = async (req, res, next) => {
+    const { currentPassword, newPassword } = req.body;
     try {
-        if (password) {
-            req.body.password = await hash(password, 10);
-        }
-        //user token check
-        const user = await User.findByIdAndUpdate(res.locals.jwtData.id, req.body, {
-            new: true,
-        });
+        const user = await User.findById(res.locals.jwtData.id);
         if (!user) {
-            return res.status(401).send("User not registered OR Token malfunctioned");
+            return res.status(401).send("User not registered or token malfunctioned");
         }
-        if (user._id.toString() !== res.locals.jwtData.id) {
-            return res.status(401).send("Permissions didn't match");
+        const isPasswordCorrect = await compare(currentPassword, user.password);
+        if (!isPasswordCorrect) {
+            return res.status(403).send("Incorrect current password");
         }
+        const hashedNewPassword = await hash(newPassword, 10);
+        user.password = hashedNewPassword;
+        await user.save();
         const token = createToken(user._id.toString(), user.email, "7d");
         const expires = new Date();
         expires.setDate(expires.getDate() + 7);
         res.cookie(COOKIE_NAME, token, {
             path: "/",
-            // domain: "u4e-zjbtlzdxca-uc.a.run.app",
-            domain: 'localhost',
+            domain: "localhost",
+            // domain: 'u4education.com',
             expires,
             httpOnly: false,
             secure: true,
             signed: true,
         });
-        return res
-            .status(200)
-            .json({ message: "OK", _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email, isTeacher: user.isTeacher, isAdmin: user.isAdmin });
+        return res.status(200).json({
+            message: "Password updated successfully",
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+        });
     }
     catch (error) {
         console.log(error);
-        return res.status(200).json({ message: "ERROR", cause: error.message });
+        return res.status(500).json({ message: "ERROR", cause: error.message });
     }
 };
 export const userUpdate = async (req, res, next) => {
@@ -245,6 +253,7 @@ export const userLogout = async (req, res, next) => {
             secure: true,
             // domain: "u4e-zjbtlzdxca-uc.a.run.app",
             domain: 'localhost',
+            // domain: 'u4education.com',
             signed: true,
             path: "/",
         });

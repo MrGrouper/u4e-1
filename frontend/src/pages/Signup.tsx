@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { IoIosLogIn } from "react-icons/io";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, CircularProgress, Link } from "@mui/material";
 import CustomizedInput from "../components/shared/CustomizedInput";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
@@ -12,8 +12,11 @@ const Signup = () => {
   const auth = useAuth();
 
   useEffect(() => {
-    if (auth?.user) {
-      return navigate("/login");
+    if (auth?.user && auth.isLoggedIn && auth.user.isTeacher) {
+      return navigate("/portal");
+    }
+    if (auth?.user && auth.isLoggedIn && !auth.user.isTeacher) {
+      return navigate("/dashboard");
     }
   }, [auth]);
 
@@ -25,9 +28,7 @@ const Signup = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     try {
-      toast.loading("Signing Up", { id: "signup" });
       await auth?.studentSignup(firstname, lastname, email, password);
-      toast.success("Signed Up Successfully", { id: "signup" });
       navigate("/onboard");
     } catch (error) {
       console.log(error);
@@ -40,7 +41,6 @@ const Signup = () => {
       display={"flex"}
       justifyContent={"center"}
       alignItems={"center"}
-      mt={{ xs: 4, sm: 8 }} // Responsive margin-top
       width="100%" // Ensure full width for mobile responsiveness
       height="100vh" // Full height for centering vertically
     >
@@ -49,8 +49,6 @@ const Signup = () => {
         style={{
           margin: "auto",
           padding: "30px",
-          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
-          borderRadius: "10px",
           border: "none",
           width: "90%", // Adjust width for mobile responsiveness
           maxWidth: "400px", // Maximum width for larger screens
@@ -63,7 +61,7 @@ const Signup = () => {
             justifyContent: "center",
           }}
         >
-          <Box display={"flex"} justifyContent={"center"}>
+          <Box display={"flex"} justifyContent={"center"} alignSelf={"center"}>
             <Logo />
           </Box>
           <Typography
@@ -82,16 +80,24 @@ const Signup = () => {
             type="submit"
             color="secondary"
             variant="contained"
-            sx={{
-              px: 2,
-              py: 1,
-              mt: 2,
-              borderRadius: 2,
-            }}
-            endIcon={<IoIosLogIn />}
+            endIcon={auth?.studentSignupPending ? null : <IoIosLogIn />}
+            disabled = {auth?.studentSignupPending ? true : false}
           >
-            Signup
+            {auth?.studentSignupPending ? 
+            <CircularProgress size={24} color="secondary"/> : "Signup" }
           </Button>
+          <Typography pt="10px" alignSelf= "center "variant="caption" sx={{ textDecoration: "none" }}>
+            <Link
+              color="secondary.light"
+              sx={{ wordBreak: "break-word" }}
+              onClick={() => navigate("/login")}
+              underline="hover"
+              noWrap
+            >
+              Already a user?
+            </Link>
+          </Typography>
+
         </Box>
       </form>
     </Box>

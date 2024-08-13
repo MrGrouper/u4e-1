@@ -53,7 +53,7 @@ const DrawerLinks = () => {
         </Button>
         <Button
           startIcon={<InfoIcon />}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/about")}
           size="medium"
           sx={{
             width: "200px",
@@ -67,7 +67,7 @@ const DrawerLinks = () => {
         </Button>
         <Button
           startIcon={<AccessibilityNewIcon />}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/contribute")}
           size="medium"
           sx={{
             width: "200px",

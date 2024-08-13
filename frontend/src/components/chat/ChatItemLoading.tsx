@@ -12,7 +12,8 @@ const ChatItemLoading = () => {
             display: 'flex',
             gap: 2,
             borderRadius: 2,
-            maxWidth:"800px"
+            maxWidth:"800px",
+            padding: "0px 10px 0px 10px"
           }}
         >
     

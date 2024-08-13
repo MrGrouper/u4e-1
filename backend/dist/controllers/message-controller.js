@@ -1,5 +1,6 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
+import { openai } from "../config/openai-config.js";
 // import { OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import Classroom from "../models/Classroom.js";
 import { runAiAssistant } from "../utils/aihelper.js";
@@ -88,7 +89,7 @@ export const sendInitialChatRequest = async (req, res, next) => {
                 role: "teacher"
             });
             const savedChatResponseMessage = await chatResponseMessage.save();
-            initialTeacherMessage.save();
+            await initialTeacherMessage.save();
             //@ts-expect-error populate doesnt change type
             classroom.messages = classroom.messages.concat(savedChatResponseMessage, initialTeacherMessage);
             await classroom.save();
@@ -100,61 +101,34 @@ export const sendInitialChatRequest = async (req, res, next) => {
         console.log(error);
     }
 };
-// export const generateChatCompletion = async (req, res) => {
-//   const { classroomId, senderId, text, teacherStudent, role } = req.body;
-//   console.log("classroomId", classroomId)
-//   const classroom = await Classroom.findById(classroomId).populate("messages");
-//   const message = new Message({
-//     classroomId: classroomId,
-//     senderId,
-//     text,
-//     teacherStudent,
-//     role,
-//   });
-//   try {
-//     const savedMessage = await message.save();
-//     //@ts-expect-error populate doesnt change type
-//     classroom.messages = classroom.messages.concat(savedMessage);
-//     await classroom.save();
-//     const chats = classroom.messages.map((message) => {
-//       let chatRole;
-//       //@ts-expect-error populate doesnt change type
-//       if (message.role == "assistant" || message.role == "system") {
-//         //@ts-expect-error populate doesnt change type
-//         chatRole = message.role;
-//       } else {
-//         chatRole = "user";
-//       }
-//       return {
-//         role: chatRole,
-//         //@ts-expect-error populate doesnt change type
-//         content: message.text,
-//       };
-//     }) as ChatCompletionRequestMessage[];
-//     const config = configureOpenAI();
-//     const openai = new OpenAIApi(config);
-//     // get latest response
-//     const chatResponse = await openai.createChatCompletion({
-//       model: "gpt-3.5-turbo",
-//       messages: chats,
-//     });
-//     const chatResponseMessage = new Message({
-//       classroomId: classroomId,
-//       senderId,
-//       text: chatResponse.data.choices[0].message.content,
-//       teacherStudent,
-//       role: chatResponse.data.choices[0].message.role
-//     });
-//     const savedChatResponseMessage = await chatResponseMessage.save()
-//     //@ts-expect-error populate doesnt change type
-//     classroom.messages = classroom.messages.concat(savedChatResponseMessage);
-//     await classroom.save();
-//     res.status(200).json(savedMessage);
-//   } catch (error) {
-//     res.status(500).json(error);
-//     console.log(error);
-//   }
-// };
+export const sendUpdateClassroomMessage = async (req, res, next) => {
+    const { classroomId, subjectName, vectorStoreFileId, additionalInstructions } = req.body;
+    const classroom = await Classroom.findById(classroomId).populate("messages");
+    console.log(classroom);
+    const content = `This is the teacher. I've updated your course info. You are teaching ${subjectName}. Please use the pdf document matching ${vectorStoreFileId} that was provided to you as your curriculum. Continue teaching the topics where you left off previously. But use this new curriculum from now onwards. ${additionalInstructions}Respond to this message with "Your human teacher has updated the course information. Are you ready to continue?"`;
+    try {
+        const lastMessageForRun = await runAiAssistant(classroom.threadId, content, "user");
+        if (lastMessageForRun) {
+            const chatResponseMessage = new Message({
+                classroomId: classroomId,
+                senderId: 'AI',
+                //@ts-expect-error text does exist on object
+                text: lastMessageForRun.content[0].text.value,
+                teacherStudent: false,
+                role: lastMessageForRun.role
+            });
+            const savedChatResponseMessage = await chatResponseMessage.save();
+            //@ts-expect-error populate doesnt change type
+            classroom.messages = classroom.messages.concat(savedChatResponseMessage);
+            await classroom.save();
+            res.status(200).json(lastMessageForRun);
+        }
+    }
+    catch (error) {
+        res.status(500).json(error);
+        console.log(error);
+    }
+};
 export const getAIMessages = async (req, res, next) => {
     const { classroomId } = req.params;
     try {
@@ -174,6 +148,17 @@ export const getTSMessages = async (req, res, next) => {
     catch (error) {
         res.status(500).json(error);
     }
+};
+export const ttsMessage = async (req, res, next) => {
+    const { text } = req.body;
+    console.log("text", text);
+    const mp3 = await openai.audio.speech.create({
+        model: "tts-1",
+        voice: "alloy",
+        input: text
+    });
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    res.send(buffer);
 };
 // export const generateChatCompletion = async (
 //   req: Request,

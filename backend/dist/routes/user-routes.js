@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllUsers, teacherSignup, userLogin, userLogout, userUpdate, studentSignup, verifyUser, getUser, } from "../controllers/user-controllers.js";
+import { getAllUsers, teacherSignup, userLogin, userLogout, userUpdate, studentSignup, verifyUser, getUser, userChangePassword, } from "../controllers/user-controllers.js";
 import { loginValidator, signupValidator, validate, } from "../utils/validators.js";
 import { verifyToken } from "../utils/token-manager.js";
 const userRoutes = Router();
@@ -11,5 +11,6 @@ userRoutes.get("/auth-status", verifyToken, verifyUser);
 userRoutes.get("/logout", verifyToken, userLogout);
 userRoutes.put("/:id/update", verifyToken, userUpdate);
 userRoutes.get("/:id", getUser);
+userRoutes.post("/:id/changePassword", verifyToken, userChangePassword);
 export default userRoutes;
 //# sourceMappingURL=user-routes.js.map

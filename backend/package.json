@@ -44,6 +44,7 @@
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.4.8",
+    "@types/react-speech-recognition": "^3.9.5",
     "chokidar-cli": "^3.0.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1",

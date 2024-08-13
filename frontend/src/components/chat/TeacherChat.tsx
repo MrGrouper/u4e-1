@@ -47,6 +47,8 @@ const TeacherChat = (props: {
   classroom: Classroom;
   currentUser: any;
   otherUser: any;
+  // handleSetSocketMessage,
+  // receivedMessage
 }) => {
   const theme = useTheme();
   const queryClient = useQueryClient();

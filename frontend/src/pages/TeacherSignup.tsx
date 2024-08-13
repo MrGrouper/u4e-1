@@ -13,7 +13,8 @@ const TeacherSignup = () => {
 
   useEffect(() => {
     if (auth?.user) {
-      return navigate("/onboard");
+      toast.success("You're already a teacher")
+      return navigate("/portal");
     }
   }, [auth, navigate]);
 
@@ -50,8 +51,6 @@ const TeacherSignup = () => {
         style={{
           margin: "auto",
           padding: "30px",
-          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
-          borderRadius: "10px",
           border: "none",
           width: "90%", // Adjust width for mobile responsiveness
           maxWidth: "400px", // Maximum width for larger screens
@@ -64,7 +63,7 @@ const TeacherSignup = () => {
             justifyContent: "center",
           }}
         >
-          <Box display={"flex"} justifyContent={"center"}>
+          <Box display={"flex"} justifyContent={"center"} alignSelf={"center"}>
             <Logo />
           </Box>
           <Typography

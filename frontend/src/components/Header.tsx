@@ -35,13 +35,14 @@ const Header = () => {
             sx={{
               display: "flex",
               flexWrap: "nowrap",
-              justifyContent: "flex-start",
+              justifyContent: "space-between",
+              alignContent:"center",
+              height:"100%"
             }}
           >
-            <Box sx={{ display: "flex", flexWrap: "nowrap" }}>
-              <DrawerComp />
               <Logo />
-            </Box>
+              <DrawerComp />
+
           </Toolbar>
         </>
       ) : (

@@ -1,22 +1,30 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Button, IconButton, TextField } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  TextField,
+  CircularProgress,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuth } from "../../context/AuthContext";
 import { updateSubject } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
 import { Types } from "mongoose";
+import { useMutation } from "@tanstack/react-query";
 
 type Subject = {
-  name: string,
-  teacherId: Types.ObjectId | string,
-  curriculum: string,
-  vectorStoreFileId: string, 
-  courseDescription: string,
-  imageUrl: string,
-  videos:string[], 
-  classrooms: Types.ObjectId[]
-}
+  name: string;
+  teacherId: Types.ObjectId | string;
+  curriculum: string;
+  vectorStoreFileId: string;
+  courseDescription: string;
+  imageUrl: string;
+  videos: string[];
+  classrooms: Types.ObjectId[];
+};
 
 const SubjectVideos = (props: { subject: Subject }) => {
   const auth = useAuth();
@@ -35,6 +43,14 @@ const SubjectVideos = (props: { subject: Subject }) => {
     }
   }, [auth, props.subject]);
 
+  const subjectMutation = useMutation({
+    mutationFn: updateSubject,
+    onError: (error) => {
+      console.log(error);
+      toast.error("could not update course");
+    },
+  });
+
   const handleAdd = (e) => {
     e.preventDefault();
     const videoIdInput = formInput as string;
@@ -48,7 +64,7 @@ const SubjectVideos = (props: { subject: Subject }) => {
     e.preventDefault();
     try {
       const newSubjectInfo = { ...props.subject, videos: videoId };
-      await updateSubject(newSubjectInfo);
+      await subjectMutation.mutateAsync(newSubjectInfo);
       toast.success("Videos updated!");
     } catch (error) {
       console.log(error);
@@ -64,17 +80,14 @@ const SubjectVideos = (props: { subject: Subject }) => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        margin: "auto",
-        padding: "30px",
-        boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
-        borderRadius: "10px",
-        maxWidth: "100%",
-        width: "100%",
-        '@media (min-width: 600px)': {
-          maxWidth: "400px",
-        },
+          display: "flex",
+          flexDirection: "column",
+          margin: "0 auto",
+          padding: "1rem",
+          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+          borderRadius: "10px",
+          maxWidth: "600px",
+          width: "90%",
       }}
     >
       <Typography paddingBottom={"5px"} variant="h5" textAlign={"center"}>
@@ -162,8 +175,13 @@ const SubjectVideos = (props: { subject: Subject }) => {
           width: "100%",
           borderRadius: 2,
         }}
+        disabled={subjectMutation.isPending ? true : false}
       >
-        Update Videos
+        {subjectMutation.isPending ? (
+          <CircularProgress size={24} color="secondary" />
+        ) : (
+          "Update Videos"
+        )}
       </Button>
     </Box>
   );

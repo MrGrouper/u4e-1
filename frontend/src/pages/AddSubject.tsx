@@ -23,20 +23,29 @@ const AddSubject = () => {
 
   
   return (
-    <div>
       <Box
-        display={"flex"}
-        flex={{ xs: 1, md: 0.5 }}
-        justifyContent={"center"}
-        alignItems={"center"}
-        padding={2}
-        ml={"auto"}
-        mt={16}
+      display="flex"
+      flexDirection="column"
+      flexWrap = "nowrap"
+      alignItems="center"
+      height= "100%"
+      width="100%"
+      minHeight="0px"
+      gap="20px"
+      sx={{
+        overflow: "hidden",
+        overflowY: "scroll",
+        gap: 3,
+        pt: 3,
+        pb: 3,
+        pl: 1,
+        pr: 1
+      
+      }}
       >
         <CreateSubject />
          
       </Box>
-    </div>
   );
 
 };

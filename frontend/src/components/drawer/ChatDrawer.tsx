@@ -60,6 +60,7 @@ const ChatDrawer = (props: {
           alignItems: "center",
           gap: "5px",
           mt: "10px",
+          mb:"10px"
         }}
         variant="outlined"
         onClick={toggleDrawer(true)}

@@ -14,19 +14,31 @@ const Onboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!auth?.user || !auth.isLoggedIn) {
       return navigate("/login");
     }
   }, [auth, navigate]);
 
   return (
     <Box
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      mt={{ xs: 4, sm: 8 }} // Responsive margin-top
-      width="100%" // Ensure full width for mobile responsiveness
-      height="100vh" // Full height for centering vertically
+    display="flex"
+    flexDirection="column"
+    flexWrap = "nowrap"
+    alignItems="center"
+    height= "100%"
+    width="100%"
+    minHeight="0px"
+    gap="20px"
+    sx={{
+      overflow: "hidden",
+      overflowY: "scroll",
+      gap: 3,
+      pt: 3,
+      pb: 3,
+      pl: 1,
+      pr: 1
+    
+    }}
     >
       <Box
         sx={{
@@ -38,7 +50,7 @@ const Onboard = () => {
           borderRadius: "10px",
           border: "none",
           width: "90%", // Adjust width for mobile responsiveness
-          maxWidth: "400px", // Maximum width for larger screens
+          maxWidth: "600px", // Maximum width for larger screens
         }}
       >
         <Box
@@ -58,12 +70,12 @@ const Onboard = () => {
             gap={"15px"}
           >
             <CustomAvatar
-              firstName={auth.user.firstname}
-              lastName={auth.user.lastname}
-              avatarUrl={auth.user.avatarUrl}
+              firstName={auth?.user?.firstname}
+              lastName={auth?.user?.lastname}
+              avatarUrl={auth?.user?.avatarUrl}
               size={30}
             />
-            <Typography>{auth.user.email}</Typography>
+            <Typography>{auth?.user?.email}</Typography>
           </Box>
           <Box display={"flex"} justifyContent={"center"} gap={"15px"}>
             <Card

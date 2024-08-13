@@ -24,7 +24,7 @@ export const validate = (validations: ValidationChain[]) => {
 ]
 
 export const signupValidator = [
-    body("firstname").notEmpty().withMessage("Fisrt name is required"),
+    body("firstname").notEmpty().withMessage("First name is required"),
     body("lastname").notEmpty().withMessage("Last name is required"),
     ...loginValidator,
 ]

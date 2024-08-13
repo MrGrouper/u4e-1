@@ -33,7 +33,10 @@ const userSchema = new mongoose.Schema({
     avatarUrl: {
         type: String,
         required: false
-    }
+    },
+    languages: [{
+            type: String,
+        }]
 }, { timestamps: true });
 userSchema.set('toJSON', {
     transform: (document, returnedObject) => {

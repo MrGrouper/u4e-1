@@ -48,7 +48,7 @@ const ActiveClassCard = (props: { teacherId; classroom }) => {
             justifyContent: "center",
           }}
         >
-          <Typography gutterBottom variant="h4" component="div">
+          <Typography gutterBottom variant="h5" component="div" textAlign={"center"}>
             {subject.name}
           </Typography>
           <Typography gutterBottom variant="h6" component="div">
@@ -64,7 +64,7 @@ const ActiveClassCard = (props: { teacherId; classroom }) => {
               alignItems: "center",
             }}
           />
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h6" component="div">
             {`${user.firstname} ${user.lastname}`}
           </Typography>
         </CardContent>

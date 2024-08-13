@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import { Box, Typography, Button, CircularProgress, Avatar, Badge } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import {
-  uploadCurriculum,
   sendCreateSubject,
+  uploadNewSubject
 } from "../../helpers/api-communicator";
 // import { updateUser } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
@@ -13,17 +13,22 @@ import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 
+
 const CreateSubject = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const fileInput = useRef(null);
 
   const [curriculum, setCurriculum] = useState<any>(null);
+  const [image, setImage] = useState<any>(null);
+  const [url, setUrl] = useState(null);
+
 
   const uploadMutation = useMutation({
-    mutationFn: uploadCurriculum,
+    mutationFn: uploadNewSubject,
     onError: (error) => {
       console.log(error);
-      toast.error(`could not upload curriculum`);
+      toast.error(`could not upload files`);
     },
   });
 
@@ -35,92 +40,128 @@ const CreateSubject = () => {
     },
   });
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const subjectName = data.get("subjectname") as string;
     const courseDescription = data.get("courseDescription") as string;
-    if (curriculum) {
-      data.append("curriculum", curriculum);
-      uploadMutation.mutate(data, {
-        onSuccess(uploadCurriculumRes) {
-          const newSubject = {
-            name: subjectName,
-            teacherId: auth.user._id,
-            curriculum: uploadCurriculumRes.curriculumUrl,
-            vectorStoreFileId: uploadCurriculumRes.vectorStoreFileId,
-            courseDescription: courseDescription,
-            imageUrl: null,
-            videos: null,
-            classrooms: null
-          };
-          createSubjectMutation.mutate(newSubject ,
-            {
-              onSuccess: (createSubjectRes) => {
-                toast.success(`Curriculum uploaded`);
-                navigate(`/${createSubjectRes.id}/onboard`, {state: createSubjectRes});
-              },
-            }
-          );
+    try{
+      if (!image) {
+        toast.error("No image selected")
+        throw new Error("No image selected")
+      }
+      if (!curriculum){
+        toast.error("No curriculum selected")
+        throw new Error("No curriculum selected")
+      }
+      data.append("image", image)
+      data.append("curriculum", curriculum)
+      const resData = await uploadMutation.mutateAsync(data)
+
+    const newSubject = {
+      name: subjectName,
+      teacherId: auth.user._id,
+      curriculum: resData.curriculumUrl,
+      vectorStoreFileId: resData.vectorStoreFileId,
+      courseDescription: courseDescription,
+      imageUrl: resData.imageUrl,
+      videos: null,
+      classrooms: null
+    };
+    createSubjectMutation.mutate(newSubject ,
+      {
+        onSuccess: (createSubjectRes) => {
+          toast.success(`Curriculum uploaded`);
+          navigate(`/${createSubjectRes.id}/onboard`, {state: createSubjectRes});
         },
-      })
+      }
+    );
+    }
+    catch(error) {
+      console.log(error)
     }
   };
 
-  //     try {
-  //       const uploadCurriculumRes = await uploadCurriculum(data);
-  //       const newSubject = await sendCreateSubject({
-  //         name: subjectName,
-  //         teacherId: auth.user._id,
-  //         curriculum: uploadCurriculumRes.curriculumUrl,
-  //         vectorStoreFileId: uploadCurriculumRes.vectorStoreFileId,
-  //         courseDescription: courseDescription,
-  //         imageUrl: null,
-  //         videos: null,
-  //         classrooms: null
-  //       });
-  //       console.log(newSubject)
-  //       toast.success("Course created!");
-  //       navigate(`/${newSubject.id}/onboard`, {state: newSubject})
-  //     } catch (error) {
-  //       console.log(error);
-  //       toast.error("Could not create course");
-  //     }
-  //   } else {
-  //     toast.error("Please select an file");
-  //   }
-  // };
 
   const handleChange = (e) => {
     e.preventDefault();
     setCurriculum(e.target.files[0]);
   };
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    setImage(e.target.files[0]);
+    setUrl(URL.createObjectURL(e.target.files[0]));
+  };
 
   return (
         
     <form
-      onSubmit={handleSubmit}
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignContent: "center",
-        flexDirection: "column",
-        margin: "auto",
-        padding: "30px",
-        boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
-        borderRadius: "10px",
-        border: "none",
-      }}
+    onSubmit={handleSubmit}
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignContent: "center",
+      flexDirection: "column",
+      margin: "0 auto",
+      padding: "1rem",
+      boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+      borderRadius: "10px",
+      maxWidth: "600px",
+      width: "90%",
+    }}
     >
       <Box
       sx={{
         alignContent: "center",
-        paddingBottom: '15px'
+        paddingBottom: '10px'
       
       }}
       >
       <Typography variant="h4">Add New Course</Typography>
       </Box>
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <Badge
+          badgeContent={"+"}
+          color="secondary"
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          onClick={() => fileInput.current.click()}
+          sx={{
+            "& .MuiBadge-badge": {
+              color: "secondary",
+              fontSize: "30px",
+              fontWeight: "200",
+              height: "30px",
+              width: "30px",
+              borderRadius: "50%",
+            },
+            ":hover": {
+              cursor: "pointer",
+            },
+          }}
+          overlap="circular"
+        >
+          <Avatar
+            variant="rounded"
+            sx={{
+              height: "135px",
+              width: "240px",
+            }}
+            src={url}
+          ></Avatar>
+        </Badge>
+      </Box>
+      <input
+        type="file"
+        accept=".jpeg, .png, .svg, .jpg, .gif"
+        multiple={false}
+        onChange={handleImageChange}
+        ref={fileInput}
+        style={{ display: "none" }}
+      />
       <CustomizedInput type="text" name="subjectname" label="Course Name" />
 
       <TextField

@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { IoIosLogIn } from "react-icons/io";
-import { Box, Typography, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import { Typography, Button, CircularProgress, Autocomplete, TextField, Chip } from "@mui/material";
 import EditableInput from "../shared/EditableInput";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 
+const languages = [
+  "Mandarin Chinese", "Spanish", "English", "Hindi", "Bengali",
+  "Portuguese", "Russian", "Japanese", "Western Punjabi", "Marathi",
+  "Telugu", "Wu Chinese", "Turkish", "Korean", "French", "German",
+  "Vietnamese", "Tamil", "Yue Chinese", "Urdu"
+];
 
 const UserInfo = () => {
   const auth = useAuth();
@@ -13,6 +19,7 @@ const UserInfo = () => {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
 
   useEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
@@ -23,15 +30,21 @@ const UserInfo = () => {
     }
   }, [auth]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      toast.loading("Updating user info", { id: "updateUserInfo" });
+      if (!firstname) return toast.error("First name required");
+
+      if (!lastname) return toast.error("Last name required");
+
+      if (!email) return toast.error("Email required");
+
       const newUserInfo = {
         ...currentUser,
         firstname,
         lastname,
-        email
+        email,
+        languages: selectedLanguages,
       };
       console.log(newUserInfo);
       const updatedUser = await auth?.userUpdate(newUserInfo);
@@ -44,71 +57,83 @@ const UserInfo = () => {
   };
 
   return (
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          margin: "auto",
-          padding: "30px",
-          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
-          borderRadius: "10px",
-          border: "none",
-          width: "90%", // Adjust width for mobile responsiveness
-          maxWidth: "400px", // Maximum width for larger screens
-        }}
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        margin: "0 auto",
+        padding: "1rem",
+        boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+        borderRadius: "10px",
+        maxWidth: "600px",
+        width: "90%",
+      }}
+    >
+      <Typography variant="h5" textAlign="center">
+        Edit User Info
+      </Typography>
+      <EditableInput
+        type="text"
+        name="firstname"
+        label="First name"
+        value={firstname}
+        rows={1}
+        onChange={(e) => setFirstname(e.target.value)}
+      />
+      <EditableInput
+        type="text"
+        name="lastname"
+        label="Last name"
+        value={lastname}
+        rows={1}
+        onChange={(e) => setLastname(e.target.value)}
+      />
+      <EditableInput
+        type="email"
+        name="email"
+        label="Email"
+        value={email}
+        rows={1}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <Autocomplete
+        multiple
+        options={languages}
+        getOptionLabel={(option) => option}
+        value={selectedLanguages}
+        //@ts-expect-error event not used
+        onChange={(event, newValue) => setSelectedLanguages(newValue)}
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+          ))
+        }
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="Languages Spoken"
+            placeholder="Select Languages"
+            margin="normal"
+          />
+        )}
+      />
+      <Button
+        type="submit"
+        variant="contained"
+        color="secondary"
+        sx={{ mt: "20px" }}
+        disabled={auth?.userUpdatePending ? true : false}
+        endIcon={auth?.userUpdatePending ? null : <SaveAltIcon />}
       >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <Typography
-          variant="h5"
-          textAlign="center"
-        >
-          Edit User Info
-        </Typography>
-        <EditableInput
-          type="text"
-          name="firstname"
-          label="First name"
-          value={firstname}
-          rows={1}
-          onChange={(e) => setFirstname(e.target.value)}
-        />
-        <EditableInput
-          type="text"
-          name="lastname"
-          label="Last name"
-          value={lastname}
-          rows={1}
-          onChange={(e) => setLastname(e.target.value)}
-        />
-        <EditableInput
-          type="email"
-          name="email"
-          label="Email"
-          value={email}
-          rows={1}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <Button
-          type="submit"
-          variant="contained"
-          color="secondary"
-          sx={{
-            px: 2,
-            py: 1,
-            mt: 2,
-            borderRadius: 2,
-          }}
-          endIcon={<IoIosLogIn />}
-        >
-          Save Edits
-        </Button>
-      </Box>
+        {auth?.userUpdatePending ? (
+          <CircularProgress size={24} color="secondary" />
+        ) : (
+          "Save Edits"
+        )}
+      </Button>
     </form>
   );
 };

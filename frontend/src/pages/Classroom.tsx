@@ -28,7 +28,7 @@ import ErrorWithPage from "../components/shared/ErrorWithPage";
 // const Classroom = (props: {handleSetSocketMessage, receivedMessage}) => {
   const Classroom = () => {
     const auth = useAuth()
-    const currentUser = auth.user
+    const currentUser = auth?.user
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -39,17 +39,18 @@ import ErrorWithPage from "../components/shared/ErrorWithPage";
   // const [subject, setSubject] = useState(null)
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!auth?.user || !auth.isLoggedIn) {
       return navigate("/login");
     }
   }, [auth, navigate]);
+
   
   const { data: classroom } = useQuery({
     queryKey :["classroom", id], 
     queryFn: () => getClassroomById(id)})
 
 
-    const otherUserId = currentUser._id === classroom?.studentId ? classroom?.teacherId : classroom?.studentId
+    const otherUserId = currentUser?._id === classroom?.studentId ? classroom?.teacherId : classroom?.studentId
     
     const { isPending, isError, error, data: otherUser } = useQuery({
       queryKey: ["user", otherUserId],
@@ -73,9 +74,10 @@ import ErrorWithPage from "../components/shared/ErrorWithPage";
         <Box sx={{
           height: "100%",  
           display:"flex", 
+          width:{md: "calc(100vw - 290px)"},
           alignItems:"center",
-
-          flexDirection: "column-reverse"
+          justifyContent:"",
+          flexDirection: "column-reverse",
           }}>
           <ChatDrawer 
                   classroom={classroom} 

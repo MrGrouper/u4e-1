@@ -5,20 +5,19 @@
 // import * as fs from 'fs';
 // import { toFile } from 'openai/uploads';
 // import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
-import { Storage } from '@google-cloud/storage';
-import { v4 as uuidv4 } from 'uuid';
+import { Storage } from "@google-cloud/storage";
+import { v4 as uuidv4 } from "uuid";
 import { openai, vectorStoreId } from "../config/openai-config.js";
-import { toFile } from 'openai/uploads';
+import { toFile } from "openai/uploads";
 const storageClient = new Storage({
-    keyFilename: '../ardent-particle-382720-df486617d640.json',
-    projectId: 'ardent-particle-382720'
+    keyFilename: "../ardent-particle-382720-df486617d640.json",
+    projectId: "ardent-particle-382720",
 });
-const bucketName = 'u4e';
+const bucketName = "u4e";
 export const imageUpload = async (req, res, next) => {
-    console.log('req', req.file);
     try {
         if (!req.file) {
-            return res.status(400).send('No file uploaded');
+            return res.status(400).send("No file uploaded");
         }
         const fileBuffer = req.file.buffer;
         const originalName = req.file.originalname;
@@ -27,17 +26,17 @@ export const imageUpload = async (req, res, next) => {
         await file.save(fileBuffer);
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${file.name}`;
         res.status(200).json(publicUrl);
-        console.log('image saved', publicUrl);
+        console.log("image saved", publicUrl);
     }
     catch (error) {
         res.status(500).json(error);
-        console.log('image didnt save');
+        console.log("image didnt save");
     }
 };
 export const curriculumUpload = async (req, res, next) => {
     try {
         if (!req.file) {
-            return res.status(400).send('No file uploaded');
+            return res.status(400).send("No file uploaded");
         }
         const fileBuffer = req.file.buffer;
         const originalName = req.file.originalname;
@@ -46,25 +45,62 @@ export const curriculumUpload = async (req, res, next) => {
         const file = bucket.file(`curriculums/${id}-${originalName}`);
         await file.save(fileBuffer);
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${file.name}`;
-        // const fileStream = fs.createReadStream(req.file.path)
         const convertedFile = await toFile(fileBuffer, originalName);
         const uploadResponse = await openai.files.create({
             file: convertedFile,
-            purpose: 'assistants'
+            purpose: "assistants",
         });
-        console.log('upload response', uploadResponse);
         const vectorStoreFile = await openai.beta.vectorStores.files.create(vectorStoreId, {
-            file_id: uploadResponse.id
+            file_id: uploadResponse.id,
         });
-        // await openai.beta.assistants.update(assistantId, {
-        //     tool_resources: { file_search: { vector_store_ids: [vectorStoreId] } },
-        //   });
-        res.status(200).json({ curriculumUrl: publicUrl, vectorStoreFileId: vectorStoreFile.id });
-        console.log('curriculum saved', vectorStoreFile.id);
+        res
+            .status(200)
+            .json({
+            curriculumUrl: publicUrl,
+            vectorStoreFileId: vectorStoreFile.id,
+        });
+        console.log("curriculum saved", vectorStoreFile.id);
     }
     catch (error) {
         res.status(500).json(error);
-        console.log('curriculum didnt save');
+        console.log("curriculum didnt save");
     }
+};
+export const createSubjectUpload = async (req, res, next) => {
+    if (!req.files["image"][0]) {
+        return res.status(400).send("Image file missing");
+    }
+    if (!req.files["curriculum"][0]) {
+        return res.status(400).send("Curriculum file missing");
+    }
+    const imageFile = req.files["image"][0];
+    const curriculumFile = req.files["curriculum"][0];
+    const imageBuffer = imageFile.buffer;
+    const curriculumBuffer = curriculumFile.buffer;
+    const imageName = imageFile.originalname;
+    const curriculumName = curriculumFile.originalname;
+    const bucket = storageClient.bucket(bucketName);
+    const imageFileLocation = bucket.file(`images/${uuidv4()}-${imageName}`);
+    const curriculumFileLocation = bucket.file(`curriculums/${uuidv4()}-${curriculumName}`);
+    await imageFileLocation.save(imageBuffer);
+    const publicImageUrl = `https://storage.googleapis.com/${bucketName}/${imageFileLocation.name}`;
+    await curriculumFileLocation.save(curriculumBuffer);
+    const publicCurriculumUrl = `https://storage.googleapis.com/${bucketName}/${curriculumFileLocation.name}`;
+    const convertedFile = await toFile(curriculumBuffer, curriculumName);
+    const uploadResponse = await openai.files.create({
+        file: convertedFile,
+        purpose: "assistants",
+    });
+    const vectorStoreFile = await openai.beta.vectorStores.files.create(vectorStoreId, {
+        file_id: uploadResponse.id,
+    });
+    res
+        .status(200)
+        .json({
+        imageUrl: publicImageUrl,
+        curriculumUrl: publicCurriculumUrl,
+        vectorStoreFileId: vectorStoreFile.id,
+    });
+    console.log("curriculum saved", vectorStoreFile.id);
 };
 //# sourceMappingURL=file-controller.js.map

@@ -1,3 +1,4 @@
 node_modules
 /backend/node_modules
+/backend/.env
 ardent-particle-382720-df486617d640.json

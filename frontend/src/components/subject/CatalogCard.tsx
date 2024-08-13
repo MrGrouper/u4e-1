@@ -41,7 +41,7 @@ const CatalogCard = (props: { subject: Subject}) => {
           {props.subject.name}
         </Typography>
         <Typography variant="body2">
-          {truncate(props.subject.courseDescription)}
+          {props.subject.courseDescription && truncate(props.subject.courseDescription)}
         </Typography>
       </CardContent>
       {/* {(auth?.isLoggedIn && auth.user) ? 
@@ -83,7 +83,7 @@ const CatalogCard = (props: { subject: Subject}) => {
             </CardActions>
           )
         ) : ( */}
-        <CardActions color="#004643">
+        <CardActions color="#004643" sx={{alignSelf: "flex-end"}}>
         <Button size="small" variant="outlined"
                 component={Link} 
                 to={`/course/${props.subject.id}`}

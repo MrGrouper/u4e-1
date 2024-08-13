@@ -9,6 +9,7 @@ import { getSubject } from "../helpers/api-communicator";
 import { useQuery } from "@tanstack/react-query";
 import LoadingPage from "../components/shared/LoadingPage";
 import ErrorWithPage from "../components/shared/ErrorWithPage";
+import Curriculum from "../components/subject/Curriculum";
 
 const SubjectUpdate = () => {
   const auth = useAuth();
@@ -41,25 +42,24 @@ const SubjectUpdate = () => {
       <Box
         display="flex"
         flexDirection="column"
-        flexWrap="wrap"
-        justifyContent="center"
+        flexWrap = "nowrap"
         alignItems="center"
-        padding="20px"
-        margin="auto"
-        mt="65px"
+        minHeight="0px"
         gap="20px"
-        width="100%"
-        height="100%"
-        overflow="scroll"
         sx={{
-          '@media (min-width: 600px)': {
-            flexDirection: 'row',
-          },
+          overflowY: "auto",
+          pt: 3,
+          pb: 3,
+          pl: 1,
+          pr: 1,
+          flex: "1 1 auto",
+        
         }}
       >
         <SubjectInfo subject={subject} />
         <SubjectImage subject={subject} />
         <SubjectVideos subject={subject} />
+        <Curriculum subject={subject} />
       </Box>
     );
   } else {

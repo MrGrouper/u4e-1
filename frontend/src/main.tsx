@@ -7,76 +7,84 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import axios from "axios";
 import { Toaster } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import 'core-js/stable'
 
 axios.defaults.baseURL = "/api/v1";
 axios.defaults.withCredentials = true;
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 const labelFontSize = ".75em";
 const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 995,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
   typography: {
     button: {
-      textTransform: 'none'
-    }
+      textTransform: "none",
+    },
   },
   palette: {
     primary: {
-      main: '#3c4043',
-      light: '#DCDCDC'
+      main: "#3c4043",
+      light: "#DCDCDC",
     },
     secondary: {
-      main: '#118ab2'
+      main: "#118ab2",
     },
     error: {
-      main: '#ef476f'
+      main: "#ef476f",
     },
     warning: {
-      main:"#ffd166"
+      main: "#ffd166",
     },
     info: {
-      main:"#073b4c"
+      main: "#073b4c",
     },
     success: {
-      main:"#06d6a0"
+      main: "#06d6a0",
     },
   },
   components: {
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          fontSize: labelFontSize
-        }
-      }
+          fontSize: labelFontSize,
+        },
+      },
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
           "& > fieldset > legend": {
-            fontSize: `calc(0.75 * ${labelFontSize})`
-          }
-        }
-      }
-    }
-  }
+            fontSize: `calc(0.75 * ${labelFontSize})`,
+          },
+        },
+      },
+    },
+  },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <Toaster 
-          position="bottom-center" 
-    />
-          <App />
-          <ReactQueryDevtools />
-        </ThemeProvider>
-      </BrowserRouter>
-    </AuthProvider>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <Toaster position="bottom-center" />
+            <App />
+            <ReactQueryDevtools />
+          </ThemeProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

@@ -14,10 +14,10 @@ import { useQuery } from "@tanstack/react-query"
 const Dashboard = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const userId = auth.user._id
+  const userId = auth.user?._id
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!auth?.user || !auth.isLoggedIn) {
       return navigate("/login");
     }
   }, [auth, navigate]);
@@ -44,20 +44,20 @@ const Dashboard = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "calc(100vh - 90px)",
+        height: "calc(100vh - 110px)",
+        width:{md: "calc(100vw - 290px)"},
         overflow: "hidden",
         overflowY: "scroll",
         gap: "25px",
+        padding: "25px"
       }}
     >
       <Box display={"flex"} flexDirection={"column"}>
         <Typography
           variant="h4"
-          sx={{
-            padding: "20px 20px 0px 20px",
-          }}
+          pb={"20px"}
         >
-          Active Classes
+          My Classes
         </Typography>
         <Box
           sx={{
@@ -80,6 +80,7 @@ const Dashboard = () => {
     <Box
     sx={{
       display:"flex",
+      width: "100%",
       flexDirection:"column",
       alignItems:"center",
       justifyContent:'center',

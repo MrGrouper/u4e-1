@@ -1,29 +1,37 @@
 import { useState, useRef, useEffect } from "react";
-import { Box, Typography, Button, Avatar, Badge } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Avatar,
+  Badge,
+  CircularProgress,
+} from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { uploadImage } from "../../helpers/api-communicator";
 import { updateSubject } from "../../helpers/api-communicator";
 import { toast } from "react-hot-toast";
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
+import { useMutation } from "@tanstack/react-query";
 
 type Subject = {
-  name: string,
-  teacherId: Types.ObjectId | string,
-  curriculum: string,
-  vectorStoreFileId: string, 
-  courseDescription: string,
-  imageUrl: string,
-  videos:string[], 
-  classrooms: Types.ObjectId[]
-}
+  name: string;
+  teacherId: Types.ObjectId | string;
+  curriculum: string;
+  vectorStoreFileId: string;
+  courseDescription: string;
+  imageUrl: string;
+  videos: string[];
+  classrooms: Types.ObjectId[];
+};
 
-const SubjectImage = (props: {subject: Subject}) => {
+const SubjectImage = (props: { subject: Subject }) => {
   const auth = useAuth();
 
   const [image, setImage] = useState<any>(null);
   const [url, setUrl] = useState(null);
-  const [currentSubject, setCurrentSubject] = useState(null)
-  const fileInput = useRef(null)
+  const [currentSubject, setCurrentSubject] = useState(null);
+  const fileInput = useRef(null);
 
   useEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
@@ -34,23 +42,41 @@ const SubjectImage = (props: {subject: Subject}) => {
     }
   }, [auth, props.subject]);
 
+  const imageUrlMutation = useMutation({
+    mutationFn: uploadImage,
+    onError: (error) => {
+      console.log(error);
+      toast.error("could not upload image");
+    },
+  });
+
+  const subjectMutation = useMutation({
+    mutationFn: updateSubject,
+    onError: (error) => {
+      console.log(error);
+      toast.error("could not update course");
+    },
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (image) {
       const data = new FormData();
       data.append("image", image);
       try {
-        const imageUrl = await uploadImage(data);
+        const imageUrl = await imageUrlMutation.mutateAsync(data);
         const newSubjectInfo = { ...props.subject, imageUrl: imageUrl };
-        const updatedSubject = await updateSubject(newSubjectInfo);
+        const updatedSubject = await subjectMutation.mutateAsync(
+          newSubjectInfo
+        );
         setCurrentSubject(updatedSubject);
-        toast.success('Image changed!');
+        toast.success("Image changed!");
       } catch (error) {
         console.log(error);
-        toast.error('Could not upload image');
+        toast.error("Could not upload image");
       }
     } else {
-      toast.error('Please select an image');
+      toast.error("Please select an image");
     }
   };
 
@@ -58,7 +84,7 @@ const SubjectImage = (props: {subject: Subject}) => {
     e.preventDefault();
     setImage(e.target.files[0]);
     setUrl(URL.createObjectURL(e.target.files[0]));
-  }
+  };
 
   return (
     <form
@@ -66,12 +92,12 @@ const SubjectImage = (props: {subject: Subject}) => {
       style={{
         display: "flex",
         flexDirection: "column",
-        margin: "auto",
-        padding: "30px",
+        margin: "0 auto",
+        padding: "1rem",
         boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
         borderRadius: "10px",
         width: "90%",
-        maxWidth: "400px",
+        maxWidth: "600px",
       }}
     >
       <Box
@@ -83,33 +109,29 @@ const SubjectImage = (props: {subject: Subject}) => {
         {currentSubject && currentSubject.imageUrl ? (
           <Typography variant="h5">Change Image</Typography>
         ) : (
-          <Typography>Add Image</Typography>
+          <Typography variant="h5">Add Image</Typography>
         )}
       </Box>
-      <Box
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
         <Badge
-          badgeContent={'+'}
+          badgeContent={"+"}
           color="secondary"
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
+            vertical: "bottom",
+            horizontal: "right",
           }}
           onClick={() => fileInput.current.click()}
           sx={{
             "& .MuiBadge-badge": {
               color: "secondary",
-              fontSize: '30px',
-              fontWeight: '200',
-              height: '30px',
-              width: '30px',
-              borderRadius: '50%',
+              fontSize: "30px",
+              fontWeight: "200",
+              height: "30px",
+              width: "30px",
+              borderRadius: "50%",
             },
             ":hover": {
-              cursor: 'pointer',
+              cursor: "pointer",
             },
           }}
           overlap="circular"
@@ -117,8 +139,8 @@ const SubjectImage = (props: {subject: Subject}) => {
           <Avatar
             variant="rounded"
             sx={{
-              height: '135px',
-              width: '240px',
+              height: "135px",
+              width: "240px",
             }}
             src={url}
           ></Avatar>
@@ -130,7 +152,7 @@ const SubjectImage = (props: {subject: Subject}) => {
         multiple={false}
         onChange={handleChange}
         ref={fileInput}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
       <Button
         type="submit"
@@ -143,8 +165,15 @@ const SubjectImage = (props: {subject: Subject}) => {
           width: "100%",
           borderRadius: 2,
         }}
+        disabled={
+          subjectMutation.isPending || imageUrlMutation.isPending ? true : false
+        }
       >
-        Use Image
+        {subjectMutation.isPending || imageUrlMutation.isPending ? (
+          <CircularProgress size={24} color="secondary" />
+        ) : (
+          "Use Image"
+        )}
       </Button>
     </form>
   );

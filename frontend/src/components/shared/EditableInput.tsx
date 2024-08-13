@@ -35,6 +35,7 @@ const EditableInput = (props: Props) => {
         onChange={props.onChange}
         disabled={disableButton}
         multiline
+        required
         rows = {props.rows}
         InputProps={{
           style: {

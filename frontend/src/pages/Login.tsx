@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { IoIosLogIn } from "react-icons/io";
-import { Box, Typography, Button, Link } from "@mui/material";
+import { Box, Typography, Button, Link, CircularProgress } from "@mui/material";
 import CustomizedInput from "../components/shared/CustomizedInput";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
@@ -16,9 +16,7 @@ const Login = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     try {
-      toast.loading("Signing In", { id: "login" });
       await auth?.login(email, password);
-      toast.success("Signed In Successfully", { id: "login" });
     } catch (error) {
       console.log(error);
       toast.error("Signing In Failed", { id: "login" });
@@ -27,10 +25,12 @@ const Login = () => {
   useEffect(() => {
     if (auth?.user && auth.isLoggedIn && auth.user.isTeacher) {
       return navigate("/portal");
-    } else if (auth?.user && auth.isLoggedIn && !auth.user.isTeacher) {
+    }
+    if (auth?.user && auth.isLoggedIn && !auth.user.isTeacher) {
       return navigate("/dashboard");
-    } else return navigate("/login");
+    }
   }, [auth]);
+
   return (
     // <Box width={"100%"} height={"100%"} display="flex" justifyContent={"center"}
     // alignItems={"center"}>
@@ -39,7 +39,6 @@ const Login = () => {
       display={"flex"}
       justifyContent={"center"}
       alignItems={"center"}
-      mt={{ xs: 4, sm: 8 }} // Responsive margin-top
       width="100%" // Ensure full width for mobile responsiveness
       height="100vh" // Full height for centering vertically
     >
@@ -48,8 +47,8 @@ const Login = () => {
         style={{
           margin: "auto",
           padding: "30px",
-          boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
-          borderRadius: "10px",
+          // boxShadow: "0px 0.25px 5px 0px rgba(0,0,0,0.36)",
+          // borderRadius: "10px",
           border: "none",
           width: "90%", // Adjust width for mobile responsiveness
           maxWidth: "400px", // Maximum width for larger screens
@@ -62,7 +61,7 @@ const Login = () => {
             justifyContent: "center",
           }}
         >
-                    <Box display={"flex"} justifyContent={"center"}>
+          <Box display={"flex"} justifyContent={"center"} alignSelf={"center"}>
             <Logo />
           </Box>
           <Typography
@@ -76,27 +75,24 @@ const Login = () => {
           </Typography>
           <CustomizedInput type="email" name="email" label="Email" />
           <CustomizedInput type="password" name="password" label="Password" />
-          <Button
-            type="submit"
-            color="secondary"
-            variant="contained"
-            sx={{
-              px: 2,
-              py: 1,
-              mt: 2,
-              borderRadius: 2,
-            }}
-            endIcon={<IoIosLogIn />}
-          >
-            Log in
-          </Button>
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              endIcon={auth?.loginPending ? null :  <IoIosLogIn />}
+              disabled = {auth?.loginPending ? true : false}
+            >
+              {auth?.loginPending ? 
+            <CircularProgress size={24} color="secondary"/> : "Log In"  
+            }
+            </Button>
+          
         </Box>
         <Box
-          
           display={"flex"}
           justifyContent={"space-between"}
           paddingTop={"10px"}
-          gap={'10px'}
+          gap={"10px"}
           flexWrap={"wrap"}
         >
           <Typography variant="caption" sx={{ textDecoration: "none" }}>
@@ -111,7 +107,11 @@ const Login = () => {
             </Link>
           </Typography>
           <Box display={"flex"} flexWrap={"nowrap"} justifyContent={"flex-end"}>
-            <Typography variant="caption" noWrap sx={{ wordBreak: "break-word" }}>
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{ wordBreak: "break-word" }}
+            >
               Dont have an account?&nbsp;
             </Typography>
             <Typography

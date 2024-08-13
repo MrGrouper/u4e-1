@@ -70,8 +70,12 @@ const AboutCourse = () => {
 
   const handleEnroll = (e) => {
     e.preventDefault();
+    if (!auth.user || !auth.isLoggedIn){
+      return navigate("/signup")
+    }
+    else{
     const req = {
-      studentId: auth.user._id,
+      studentId: auth?.user?._id,
       teacherId: subject.teacherId,
       subjectId: subject.id,
     };
@@ -89,6 +93,7 @@ const AboutCourse = () => {
         );
       },
     });
+  }
   };
 
   if (subject && teacher) {
@@ -98,12 +103,13 @@ const AboutCourse = () => {
         display={"flex"}
         flexDirection={"column"}
         alignItems={"center"}
-        justifyContent={"center"}
+        padding={"20px"}
+        overflow={"hidden"}
+        sx={{overflowY:"auto"}}
       >
         <Box
           width={"100%"}
           display="flex"
-          flex={1}
           justifyContent={"center"}
           alignItems={"center"}
         >
@@ -134,7 +140,7 @@ const AboutCourse = () => {
             alignItems={"center"}
             gap={"20px"}
           >
-            <Typography align="center" variant="h1">
+            <Typography align="center" variant="h3">
               {subject.name}
             </Typography>
             <Typography variant="h5">Instructor:</Typography>
@@ -156,7 +162,7 @@ const AboutCourse = () => {
               </Typography>
             </Box>
             {subject?.classrooms.some((classroom) =>
-              classroom.studentId === auth.user._id
+              classroom.studentId === auth?.user?._id
             ) ? (
               <Button
                 size="medium"
