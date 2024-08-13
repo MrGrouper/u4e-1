@@ -6,10 +6,15 @@ import babel from 'vite-plugin-babel';
 export default defineConfig({
   server: {
     proxy: {
+<<<<<<< HEAD
       '/api/v1': {
         // target: 'https://u4e-zjbtlzdxca-uc.a.run.app:8080',
         target: 'http://localhost:8080',
         // target: "https://u4education.com:8080",
+=======
+      '/api': {
+        target: 'http://localhost:5173',
+>>>>>>> parent of 142c3b5 (working locally models slightly updated.)
         changeOrigin: true,
       },
     }

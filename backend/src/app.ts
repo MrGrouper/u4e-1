@@ -15,6 +15,7 @@ const app = express();
 
 //middlewares
 
+<<<<<<< HEAD
 // app.use((req, res, next) => {
 //   res.setHeader("Content-Security-Policy", "default-src 'self' https://u4e-zjbtlzdxca-uc.a.run.app/favicon.ico https://storage.googleapis.com/u4e/ https://fonts.googleapis.com/; img-src 'self' https://storage.googleapis.com/u4e/ https://u4e-zjbtlzdxca-uc.a.run.app/favicon.ico; style-src 'self' 'unsafe-inline'");
 //   next();
@@ -26,14 +27,20 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(express.static(path.join(__dirname, '../../frontend/dist')))
+=======
+app.use(cors({ origin: "http://localhost:5173", credentials: true, exposedHeaders: ["Set-Cookie"] } ));
+>>>>>>> parent of 142c3b5 (working locally models slightly updated.)
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
+
+
 //remove it in production
 // app.use(morgan("dev"));
 
 
 app.use("/api/v1", appRouter);
 
+<<<<<<< HEAD
 
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
@@ -41,6 +48,12 @@ app.get('/*', function (req, res) {
   
 
 
+=======
+app.use(express.static(path.join(__dirname, '../../frontend/dist')))
+app.get('*', (req: Request, res: Response) =>
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
+)
+>>>>>>> parent of 142c3b5 (working locally models slightly updated.)
 
 
 
